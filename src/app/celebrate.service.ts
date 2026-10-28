@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import confetti from 'canvas-confetti';
 
 const COLORS = ['#E0A019', '#F2B83A', '#1E6A50', '#5CC49A', '#D25F25', '#2C5BA6', '#7B4AB0', '#FA4D8B'];
@@ -10,14 +10,18 @@ export interface Hero { head: string; msg: string; combo: number; }
 
 /** Confetti, fireworks, a chime and the big full-screen card. */
 @Injectable({ providedIn: 'root' })
-export class CelebrateService {
+export class CelebrateService implements OnDestroy {
   readonly toast = signal<Toast | null>(null);
   readonly hero = signal<Hero | null>(null);
   readonly soundOn = signal(this.readSound());
+  /** brief shake of the page, bound as a class on the root component's host */
+  readonly pulse = signal(false);
   private combo = 0;
   private comboTimer?: ReturnType<typeof setTimeout>;
   private toastTimer?: ReturnType<typeof setTimeout>;
   private heroTimer?: ReturnType<typeof setTimeout>;
+  private pulseTimer?: ReturnType<typeof setTimeout>;
+  private fxTimers = new Set<ReturnType<typeof setTimeout>>();
   private actx?: AudioContext;
   private reduced = typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -45,7 +49,8 @@ export class CelebrateService {
     this.comboTimer = setTimeout(() => (this.combo = 0), 10 * 60 * 1000);
     const epic = big || this.combo % 5 === 0;
     this.chime(epic);
-    document.body.classList.remove('pulse'); void document.body.offsetWidth; document.body.classList.add('pulse');
+    this.pulse.set(false); clearTimeout(this.pulseTimer);
+    this.later(() => { this.pulse.set(true); this.pulseTimer = setTimeout(() => this.pulse.set(false), 400); }, 0);
     if (epic) {
       this.hero.set({ head: head || HYPE[Math.floor(Math.random() * HYPE.length)], msg, combo: this.combo });
       clearTimeout(this.heroTimer);
@@ -53,7 +58,7 @@ export class CelebrateService {
       this.burst(at, 160); this.cannons(); this.fireworks(2600);
     } else {
       this.showToast({ title: TITLES[Math.floor(Math.random() * TITLES.length)] + (this.combo > 1 ? `  ×${this.combo}` : ''), msg, icon: '★' });
-      this.burst(at, 110); setTimeout(() => this.cannons(), 120);
+      this.burst(at, 110); this.later(() => this.cannons(), 120);
     }
   }
 
@@ -71,10 +76,23 @@ export class CelebrateService {
       if (Date.now() > end) return;
       this.fire({ particleCount: 70, spread: 360, startVelocity: 32, ticks: 90, gravity: 0.9, scalar: 1.15, shapes: ['circle', 'square', 'star'],
         origin: { x: 0.15 + Math.random() * 0.7, y: 0.15 + Math.random() * 0.35 } });
-      setTimeout(shot, 260);
+      this.later(shot, 260);
     };
     shot();
-    setTimeout(() => this.fire({ particleCount: 220, spread: 160, startVelocity: 55, scalar: 1.4, shapes: ['star'], origin: { x: 0.5, y: 0.6 } }), ms * 0.5);
+    this.later(() => this.fire({ particleCount: 220, spread: 160, startVelocity: 55, scalar: 1.4, shapes: ['star'], origin: { x: 0.5, y: 0.6 } }), ms * 0.5);
+  }
+
+  /** setTimeout that ngOnDestroy can cancel (the app is unmounted when the host page switches away) */
+  private later(fn: () => void, ms: number) {
+    const id = setTimeout(() => { this.fxTimers.delete(id); fn(); }, ms);
+    this.fxTimers.add(id);
+  }
+
+  ngOnDestroy() {
+    [this.comboTimer, this.toastTimer, this.heroTimer, this.pulseTimer, ...this.fxTimers].forEach(t => clearTimeout(t));
+    this.fxTimers.clear();
+    confetti.reset();
+    this.actx?.close().catch(() => { /* already closed */ });
   }
 
   chime(big: boolean) {

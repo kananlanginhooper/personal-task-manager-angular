@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { DataSource } from './data/data-source';
 import { CelebrateService } from './celebrate.service';
+import { embedded } from './module-context';
 import { Area, Award, Bootstrap, Change, HabitDef, Note, Project, RecurringRule, Settings, ShoppingItem, Task, TrophyDef } from './models';
 import { addDays, fromMin, isWeekend, mondayOf, parseD, toMin, todayIso } from './util/dates';
 import { TrophyFacts, progress } from './trophies';
@@ -51,7 +52,7 @@ export class PlanStore {
       this.tasks.set(b.tasks); this.projects.set(b.projects); this.shopping.set(b.shopping); this.recurring.set(b.recurring);
       this.trophies.set(b.trophies); this.awards.set(b.awards); this.changes.set(b.changes); this.notes.set(b.notes);
       this.loaded.set(true);
-      document.title = b.settings?.appTitle || 'Game Plan';
+      if (!embedded()) document.title = b.settings?.appTitle || 'Game Plan';   // a host page owns its own tab title
       this.checkTrophies(false);
     } catch (e: any) {
       this.error.set(`Couldn't load your plan (${e?.message ?? e}). Is the API running?`);

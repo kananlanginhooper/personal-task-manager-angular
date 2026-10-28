@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, untracked } from '@angular/core';
+import { Component, ElementRef, computed, effect, inject, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PlanStore } from '../store';
 
@@ -44,6 +44,7 @@ import { PlanStore } from '../store';
 })
 export class EditorComponent {
   readonly store = inject(PlanStore);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   f = { title: '', date: '', start: '', est: 15, area: '', note: '', reason: '' };
 
   constructor() {
@@ -53,7 +54,7 @@ export class EditorComponent {
       const t = ed.task;
       this.f = { title: t?.title ?? '', date: t?.date ?? ed.date ?? this.store.today, start: t?.start ?? '', est: t?.est ?? 15,
         area: t?.area ?? untracked(() => this.store.areas()[0]?.id) ?? '', note: '', reason: '' };
-      setTimeout(() => document.getElementById('fTitle')?.focus());
+      setTimeout(() => this.host.nativeElement.querySelector<HTMLInputElement>('#fTitle')?.focus());   // inside the shadow root, not document
     });
   }
 

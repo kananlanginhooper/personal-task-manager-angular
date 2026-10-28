@@ -42,9 +42,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "polyfills": [],
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -52,9 +50,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "styles": [],
             "allowedCommonJsDependencies": [
               "canvas-confetti"
             ]
@@ -69,8 +65,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kB",
-                  "maximumError": "12kB"
+                  "maximumWarning": "32kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all"
@@ -89,8 +85,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kB",
-                  "maximumError": "12kB"
+                  "maximumWarning": "32kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all",
@@ -141,9 +137,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ]
+            "styles": []
           }
         }
       }

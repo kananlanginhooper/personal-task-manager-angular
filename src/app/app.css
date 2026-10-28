@@ -1,7 +1,6 @@
-/* Global styles: design tokens (light + dark) and every component's classes. */
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* All of Game Plan's styles, scoped to the root component's shadow root (home-dashboards MODULES.md). Fonts load from index.html / mount(). */
 
-:root{
+:host{
   --ground:#EEF2EC; --surface:#FFFFFF; --sunk:#F6F8F4; --ink:#17221E; --muted:#5B6862; --line:#D8E0D6;
   --accent:#1E6A50; --accent-soft:#DCEDE4; --gold:#E0A019; --gold-soft:#FBF0D3;
   --warn:#B06A12; --warn-soft:#FCEBD5; --crit:#B23A30;
@@ -11,7 +10,7 @@
   --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
+  :host(:not([data-theme="light"])){
     color-scheme:dark;
     --ground:#101614; --surface:#18201D; --sunk:#141B18; --ink:#E6EEE9; --muted:#9AA9A2; --line:#2A3631;
     --accent:#5CC49A; --accent-soft:#1D3A2F; --gold:#F2B83A; --gold-soft:#3A3018;
@@ -19,7 +18,7 @@
     --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
   }
 }
-:root[data-theme="dark"]{
+:host([data-theme="dark"]){
   color-scheme:dark;
   --ground:#101614; --surface:#18201D; --sunk:#141B18; --ink:#E6EEE9; --muted:#9AA9A2; --line:#2A3631;
   --accent:#5CC49A; --accent-soft:#1D3A2F; --gold:#F2B83A; --gold-soft:#3A3018;
@@ -28,7 +27,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
+:host{display:block;min-height:100%;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
 .wrap{max-width:1240px;margin:0 auto;padding:20px 20px 80px;display:grid;gap:20px}
 h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
 h2{font-size:1.05rem;font-weight:700}
@@ -226,10 +225,10 @@ textarea{resize:vertical;min-height:60px}
 .hero.go .hero-star{animation:spin 1s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{0%{transform:scale(.3) rotate(-8deg);opacity:0}100%{transform:none;opacity:1}}
 @keyframes spin{0%{transform:scale(0) rotate(-360deg)}100%{transform:none}}
-body.pulse .wrap{animation:shake .35s ease}
+:host(.pulse) .wrap{animation:shake .35s ease}
 @keyframes shake{25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
 .soundbtn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:30;font:inherit;font-size:.78rem;font-weight:700;border:0;border-radius:999px;padding:6px 12px;background:var(--surface);color:var(--muted);box-shadow:var(--shadow);cursor:pointer}
-@media (prefers-reduced-motion:reduce){.spark{display:none}.toast{transition:none}.hero.go .hero-card,.hero.go .hero-star,body.pulse .wrap{animation:none}}
+@media (prefers-reduced-motion:reduce){.spark{display:none}.toast{transition:none}.hero.go .hero-card,.hero.go .hero-star,:host(.pulse) .wrap{animation:none}}
 
 /* notes for Claude */
 .notes-form{display:grid;gap:8px}
@@ -245,7 +244,7 @@ body.pulse .wrap{animation:shake .35s ease}
 .pill.read{background:var(--accent-soft);color:var(--accent)}
 
 /* trophy shelf */
-:root{--wood:#9A6B3F;--wood-dark:#6E4A2A}
+:host{--wood:#9A6B3F;--wood-dark:#6E4A2A}
 .shelfwrap{display:grid;gap:0}
 .shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:0 10px;padding:0 6px;border-bottom:10px solid var(--wood);border-radius:0 0 4px 4px;box-shadow:0 6px 0 -2px var(--wood-dark),0 14px 18px -10px rgba(0,0,0,.35);margin-bottom:28px}
 .trophy{display:grid;justify-items:center;align-content:end;text-align:center;gap:3px;padding:10px 4px 8px;min-height:150px;position:relative;cursor:default}
