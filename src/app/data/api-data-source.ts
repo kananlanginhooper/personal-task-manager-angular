@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import { DataSource } from './data-source';
+import { contextApiBase } from '../module-context';
 import { Award, Bootstrap, Change, Note, Project, ShoppingItem, Task } from '../models';
 
-/** API base: `<meta name="api-base" content="...">` if present, else `/api` on the same address (deploy/serve.py and `ng serve` pass it through). */
+/**
+ * API base: the host page's (when mounted as a module), else `<meta name="api-base" content="...">` if present,
+ * else `/api` on the same address (deploy/serve.py and `ng serve` pass it through).
+ */
 function apiBase(): string {
+  const fromHost = contextApiBase();
+  if (fromHost) return fromHost;
   const meta = document.querySelector('meta[name="api-base"]')?.getAttribute('content');
   return (meta || '/api').replace(/\/$/, '');
 }

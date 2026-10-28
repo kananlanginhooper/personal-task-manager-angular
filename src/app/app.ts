@@ -1,4 +1,4 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, HostListener, ViewEncapsulation, computed, inject, signal } from '@angular/core';
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { PlanStore, total } from './store';
 import { CelebrateService } from './celebrate.service';
@@ -19,6 +19,9 @@ import { pointOf } from './ui/point';
   selector: 'app-root',
   imports: [CdkDropListGroup, TodayComponent, WeekComponent, SideComponent, GoalsComponent, NotesComponent, TrophiesComponent,
     BottomComponent, EditorComponent, RecapComponent],
+  encapsulation: ViewEncapsulation.ShadowDom,
+  styleUrl: './app.css',
+  host: { '[class.pulse]': 'fx.pulse()' },
   template: `
   <div class="wrap">
     @if (store.mode === 'demo') {
