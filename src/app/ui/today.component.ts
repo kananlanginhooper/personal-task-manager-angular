@@ -87,7 +87,7 @@ export class TodayComponent {
   drop(e: CdkDragDrop<string, string, Task>) { dropInto(this.store, e); }
 }
 
-/** Shared drop handler: work out the new start time from the neighbours at the drop position. */
+/** Shared drop handler: work out the new start time from the neighbors at the drop position. */
 export function dropInto(store: PlanStore, e: CdkDragDrop<string, string, Task>) {
   const t = e.item.data, date = e.container.data;
   const order = store.tasksOn(date).filter(x => x.id !== t.id);

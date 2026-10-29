@@ -140,7 +140,7 @@ export class PlanStore {
     const p = this.problems(r);
     if (p.length) this.fx.note(p[0]);
   }
-  /** Work out a start time from the neighbours at the drop position. */
+  /** Work out a start time from the neighbors at the drop position. */
   dropStart(t: Task, date: string, prev?: Task, next?: Task): string {
     const floor = this.dayStart(date);
     let start: number;
