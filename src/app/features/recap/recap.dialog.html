@@ -1,0 +1,107 @@
+@let x = r();
+<mat-dialog-content>
+  <div class="recap-head">
+    <div class="eyebrow">Sunday recap · {{ x.range }}</div>
+    <div class="recap-big" id="recapTitle">{{ x.wins }} wins</div>
+    <div>{{ x.verdict }}</div>
+  </div>
+  <div class="tiles">
+    <div class="tile">
+      <b>{{ x.habitHits }}</b
+      ><small>daily wins of {{ x.habitPossible }}</small>
+    </div>
+    <div class="tile">
+      <b>{{ x.done }}/{{ x.planned }}</b
+      ><small>planned tasks done ({{ x.ratio }} %)</small>
+    </div>
+    <div class="tile">
+      <b>{{ x.trophies.length }}</b
+      ><small>new trophies</small>
+    </div>
+    <div class="tile">
+      <b>{{ x.best.n || '–' }}</b
+      ><small>{{ x.best.n ? 'day streak: ' + x.best.name : 'streak to start' }}</small>
+    </div>
+  </div>
+  <div class="heat">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          @for (d of x.days; track d) {
+            <th>{{ dow(d) }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (h of store.habits(); track h.id) {
+          <tr>
+            <td class="n">{{ h.name }}</td>
+            @for (d of x.days; track d) {
+              <td class="c" [class.on]="store.habitDays()[d]?.[h.id]" [title]="d"></td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="rcols">
+    <div>
+      <h4>Biggest wins</h4>
+      @if (x.bigs.length) {
+        <ul>
+          @for (t of x.bigs; track t.id) {
+            <li>{{ t.title }}</li>
+          }
+        </ul>
+      } @else {
+        <div class="empty">The hard ones show up here.</div>
+      }
+      @if (x.trophies.length) {
+        <h4 class="gap">Trophies earned</h4>
+        <ul>
+          @for (t of x.trophies; track t.id) {
+            <li>{{ t.name }}</li>
+          }
+        </ul>
+      }
+    </div>
+    <div>
+      <h4>What you taught the plan</h4>
+      @if (x.reest.length || x.moved) {
+        <ul>
+          @for (h of x.reest; track $index) {
+            <li>
+              {{ h.title }}: {{ h.from }}→{{ h.to }} m
+              @if (h.reason) {
+                ({{ h.reason }})
+              }
+            </li>
+          }
+          @if (x.moved) {
+            <li>{{ x.moved }} task{{ x.moved > 1 ? 's' : '' }} moved to a better slot</li>
+          }
+        </ul>
+        <div class="muted small">Claude uses these to size next week.</div>
+      } @else {
+        <div class="empty">
+          No estimates changed. If something ran long, click it and fix the time.
+        </div>
+      }
+      <h4 class="gap">Next week's focus</h4>
+      <ul>
+        @for (f of x.focus; track f.title) {
+          <li>
+            <b>{{ f.title }}</b>
+            @if (f.next) {
+              : {{ f.next }}
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton="filled" type="button" (click)="close(true)">Let's go, next week</button>
+</mat-dialog-actions>

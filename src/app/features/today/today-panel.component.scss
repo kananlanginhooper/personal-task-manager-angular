@@ -1,0 +1,17 @@
+.cap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.cap mat-progress-bar {
+  flex: 1;
+  border-radius: 99px;
+}
+.timeline {
+  display: grid;
+  gap: 2px;
+  min-height: 40px;
+}

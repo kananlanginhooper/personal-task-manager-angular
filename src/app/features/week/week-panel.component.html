@@ -1,0 +1,47 @@
+<app-card heading="This week" id="weekH">
+  <div card-action class="weeknav">
+    <button matIconButton type="button" (click)="shift(-7)" aria-label="Previous week">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <span class="mono">{{ label() }}</span>
+    <button matIconButton type="button" (click)="shift(7)" aria-label="Next week">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    <button matButton="filled" class="small" type="button" (click)="add()">+ Add</button>
+  </div>
+  <div class="week">
+    @for (d of days(); track d.date) {
+      <div
+        class="day"
+        [class.today]="d.date === store.today"
+        cdkDropList
+        [cdkDropListData]="d.date"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <header>
+          <b>{{ d.dow }}</b
+          ><span>{{ d.label }}</span>
+        </header>
+        <mat-progress-bar
+          mode="determinate"
+          [value]="d.pct"
+          [class.heavy]="d.pct > 70"
+          [attr.title]="d.pct + '% of free time planned'"
+        />
+        @for (t of d.tasks; track t.id) {
+          <app-week-chip
+            [task]="t"
+            [color]="store.areaColor()(t.area)"
+            [problem]="store.problems(t)[0]"
+            cdkDrag
+            [cdkDragData]="t"
+            [cdkDragDisabled]="!!t.locked"
+            (opened)="store.editor.set({ task: t })"
+          />
+        } @empty {
+          <div class="empty small">Open evening</div>
+        }
+      </div>
+    }
+  </div>
+</app-card>

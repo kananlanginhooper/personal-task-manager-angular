@@ -1,0 +1,72 @@
+:host {
+  --wood: #9a6b3f;
+  --wood-dark: #6e4a2a;
+  display: block;
+}
+.shelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+  gap: 0 10px;
+  padding: 0 6px;
+  border-bottom: 10px solid var(--wood);
+  border-radius: 0 0 4px 4px;
+  box-shadow:
+    0 6px 0 -2px var(--wood-dark),
+    0 14px 18px -10px rgba(0, 0, 0, 0.35);
+  margin-bottom: 28px;
+}
+.trophy {
+  display: grid;
+  justify-items: center;
+  align-content: end;
+  text-align: center;
+  gap: 3px;
+  padding: 10px 4px 8px;
+  min-height: 150px;
+}
+.trophy ::ng-deep svg {
+  width: 52px;
+  height: 60px;
+  filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.18));
+  transition: transform 0.2s;
+}
+.trophy:hover ::ng-deep svg {
+  transform: translateY(-3px) rotate(-3deg);
+}
+.trophy b {
+  font-family: var(--display);
+  font-size: 0.86rem;
+  line-height: 1.15;
+}
+.trophy small {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.25;
+}
+.trophy mat-progress-bar {
+  width: 70%;
+  margin-top: 2px;
+  --mat-progress-bar-active-indicator-color: var(--gold);
+  --mat-progress-bar-track-height: 4px;
+  --mat-progress-bar-active-indicator-height: 4px;
+}
+.trophy.locked ::ng-deep svg {
+  opacity: 0.55;
+}
+.trophy.locked b {
+  color: var(--muted);
+}
+.when {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--gold);
+}
+.trophy.fresh ::ng-deep svg {
+  animation: glow 1.6s ease-in-out 3;
+}
+@keyframes glow {
+  50% {
+    filter: drop-shadow(0 0 14px #f2b83a);
+    transform: translateY(-4px) scale(1.08);
+  }
+}

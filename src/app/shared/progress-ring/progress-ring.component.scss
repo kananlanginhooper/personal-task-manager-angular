@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  width: 56px;
+  height: 56px;
+  flex: none;
+}
+svg {
+  width: 100%;
+  height: 100%;
+}
+circle {
+  fill: none;
+  stroke-width: 7;
+}
+.track {
+  stroke: var(--line);
+}
+.val {
+  stroke: var(--gold);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}

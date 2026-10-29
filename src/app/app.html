@@ -1,0 +1,40 @@
+<div class="wrap">
+  @if (store.mode === 'demo') {
+    <app-demo-bar />
+  }
+  <app-page-header />
+
+  @if (store.error(); as e) {
+    <div class="status">{{ e }}</div>
+  }
+  @if (!store.loaded() && !store.error()) {
+    <div class="status">Loading your plan…</div>
+  }
+
+  <app-recap-banner />
+  @if (store.overdue().length) {
+    <app-replan-banner />
+  }
+
+  <div class="main">
+    <div class="col" cdkDropListGroup>
+      <app-today-panel />
+      <app-week-panel />
+    </div>
+    <div class="col">
+      <app-habits-panel />
+      <app-evening-card />
+      <app-shopping-panel />
+    </div>
+  </div>
+  <app-goals-panel />
+  <app-notes-panel />
+  <app-trophy-shelf />
+  <div class="bottom">
+    <app-coming-up />
+    <app-recent-wins />
+    <app-change-log />
+  </div>
+</div>
+
+<app-celebration-layer />

@@ -1,0 +1,35 @@
+:host {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  background: var(--warn-soft);
+  border-radius: 14px;
+  padding: 14px 18px;
+}
+.icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  color: var(--warn);
+}
+p {
+  margin: 2px 0 0;
+}
+ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+@media (max-width: 560px) {
+  :host {
+    grid-template-columns: 1fr;
+  }
+  .icon {
+    display: none;
+  }
+}

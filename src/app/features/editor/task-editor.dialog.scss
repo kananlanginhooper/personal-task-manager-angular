@@ -1,0 +1,31 @@
+.fgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 10px;
+  padding-top: 4px;
+}
+.full {
+  grid-column: 1 / -1;
+}
+.hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: var(--sunk);
+  padding: 8px 10px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+mat-dialog-actions {
+  gap: 8px;
+}
+.left {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-right: auto;
+}
+@media (max-width: 560px) {
+  .fgrid {
+    grid-template-columns: 1fr;
+  }
+}

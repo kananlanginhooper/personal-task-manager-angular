@@ -1,0 +1,51 @@
+<app-card heading="Notes for Claude" eyebrow='feedback, ideas, "this didn&apos;t work"' id="notesH">
+  <form class="notes-form" (submit)="save($event)">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Note for Claude</mat-label>
+      <textarea
+        matInput
+        name="noteText"
+        [ngModel]="text()"
+        (ngModelChange)="text.set($event)"
+        rows="3"
+        placeholder="e.g. Tuesdays are too full. This task takes 25 min, not 15. Add a reminder for something."
+      ></textarea>
+    </mat-form-field>
+    <div class="notes-row">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+        <mat-label>About</mat-label>
+        <mat-select name="noteAbout" [ngModel]="about()" (ngModelChange)="about.set($event)">
+          <mat-option value="">Everything / general</mat-option>
+          @for (t of upcoming(); track t.id) {
+            <mat-option [value]="t.id">{{ shortDate(t.date) }} · {{ t.title }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <button matButton="filled" type="submit">Save note</button>
+    </div>
+  </form>
+  <div class="notes">
+    @for (n of store.notes().slice(0, 12); track n.id) {
+      <div class="note">
+        <p>{{ n.text }}</p>
+        <div class="meta">
+          <span class="pill" [class.new]="n.status === 'new'" [class.read]="n.status !== 'new'">{{
+            n.status === 'new' ? 'Waiting for Claude' : 'Claude read this'
+          }}</span>
+          <span>{{ clock(n.at) }}</span>
+          @if (n.taskTitle) {
+            <span>· {{ n.taskTitle }}</span>
+          }
+        </div>
+        @if (n.reply) {
+          <div class="reply"><b>Claude:</b> {{ n.reply }}</div>
+        }
+      </div>
+    } @empty {
+      <div class="empty">
+        Notes you leave here wait for Claude. Next time you talk, Claude reads them, adjusts the
+        plan, and replies here.
+      </div>
+    }
+  </div>
+</app-card>

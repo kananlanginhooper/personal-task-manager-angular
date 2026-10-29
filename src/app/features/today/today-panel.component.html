@@ -1,0 +1,60 @@
+<app-card heading="Today's plan" id="todayH">
+  <button
+    card-action
+    matButton="outlined"
+    class="small"
+    type="button"
+    (click)="store.editor.set({ date: store.today })"
+  >
+    + Add
+  </button>
+
+  <div class="cap">
+    <span class="mono">Evening</span>
+    <mat-progress-bar mode="determinate" [value]="pct()" />
+    <span class="mono">{{ pct() }} %</span>
+  </div>
+
+  <div
+    class="timeline"
+    cdkDropList
+    [cdkDropListData]="store.today"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @if (workday(); as w) {
+      <app-marker-row
+        [time]="w.start"
+        [label]="w.label"
+        [sub]="w.sub"
+        [color]="store.areaColor()(w.area)"
+        [dur]="w.hours + ' h'"
+      />
+    }
+    @for (t of list(); track t.id; let i = $index) {
+      @if (i === cutIndex()) {
+        @if (boundary(); as b) {
+          <app-marker-row class="boundary" [time]="b.time" [label]="b.label" [sub]="b.sub" />
+        }
+      }
+      <app-today-row
+        [task]="t"
+        [color]="store.areaColor()(t.area)"
+        [problem]="store.problems(t)[0]"
+        cdkDrag
+        [cdkDragData]="t"
+        [cdkDragDisabled]="!!t.locked"
+        (toggled)="store.toggleDone(t, $event.done, $event.at)"
+        (stepToggled)="store.toggleTaskStep(t, $event.index, $event.done, $event.at)"
+        (opened)="store.editor.set({ task: t })"
+      />
+    }
+    @if (cutIndex() >= list().length) {
+      @if (boundary(); as b) {
+        <app-marker-row class="boundary" [time]="b.time" [label]="b.label" [sub]="b.sub" />
+      }
+    }
+    @if (!list().length) {
+      <div class="empty">Nothing planned yet. Drag something here from the week, or add one.</div>
+    }
+  </div>
+</app-card>

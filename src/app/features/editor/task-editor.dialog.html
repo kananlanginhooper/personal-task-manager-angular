@@ -1,0 +1,68 @@
+<form (submit)="save($event)">
+  <h2 mat-dialog-title>{{ task ? 'Change task' : 'Add a task' }}</h2>
+  <mat-dialog-content>
+    <div class="fgrid">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Task</mat-label>
+        <input matInput name="title" [(ngModel)]="f.title" required cdkFocusInitial />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Day</mat-label>
+        <input matInput type="date" name="date" [(ngModel)]="f.date" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Start</mat-label>
+        <input matInput type="time" name="start" [(ngModel)]="f.start" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Your estimate (min)</mat-label>
+        <input matInput type="number" name="est" min="5" step="5" [(ngModel)]="f.est" required />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Area</mat-label>
+        <mat-select name="area" [(ngModel)]="f.area">
+          @for (a of store.areas(); track a.id) {
+            <mat-option [value]="a.id">{{ a.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Note for Claude</mat-label>
+        <textarea
+          matInput
+          name="note"
+          [(ngModel)]="f.note"
+          rows="2"
+          placeholder="anything about this task: it's bigger than it looks, it needs a part first…"
+        ></textarea>
+        <mat-hint>Optional, read later as feedback</mat-hint>
+      </mat-form-field>
+      @if (task) {
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Why the change?</mat-label>
+          <textarea
+            matInput
+            name="reason"
+            [(ngModel)]="f.reason"
+            rows="2"
+            placeholder="e.g. took 40 min last time, this is really two jobs"
+          ></textarea>
+          <mat-hint>Helps Claude re-plan</mat-hint>
+        </mat-form-field>
+      }
+    </div>
+    @if (hint) {
+      <div class="hint">{{ hint }}</div>
+    }
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <div class="left">
+      @if (task && !task.locked) {
+        <button matButton="outlined" type="button" (click)="split()">Split in two</button>
+        <button matButton="outlined" type="button" (click)="skip()">Not doing this</button>
+      }
+    </div>
+    <button matButton type="button" (click)="cancel()">Cancel</button>
+    <button matButton="filled" type="submit">Save</button>
+  </mat-dialog-actions>
+</form>

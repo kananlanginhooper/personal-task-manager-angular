@@ -1,0 +1,30 @@
+<app-card
+  heading="Trophy shelf"
+  [eyebrow]="earnedCount() + ' of ' + list().length + ' earned'"
+  id="trophyH"
+>
+  <div class="shelf">
+    @for (t of list(); track t.id) {
+      <div
+        class="trophy"
+        [class.locked]="!t.earned"
+        [class.fresh]="store.freshTrophy() === t.id"
+        [matTooltip]="t.desc"
+      >
+        <app-trophy-cup [earned]="t.earned" [id]="t.id" />
+        <b>{{ t.name }}</b>
+        <small>{{ t.desc }}</small>
+        @if (t.earned) {
+          <span class="when">{{ t.when }}</span>
+        } @else {
+          <mat-progress-bar
+            mode="determinate"
+            [value]="(t.p / t.goal) * 100"
+            [attr.aria-label]="t.p + ' of ' + t.goal"
+          />
+          <small class="mono">{{ t.p }}/{{ t.goal }}</small>
+        }
+      </div>
+    }
+  </div>
+</app-card>

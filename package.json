@@ -7,10 +7,13 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:demo": "ng build --configuration demo && node -e \"require('fs').copyFileSync('docs/index.html','docs/404.html');require('fs').writeFileSync('docs/.nojekyll','')\"",
+    "build:demo": "node tools/build-demo.mjs",
     "privacy": "python tools/privacy_scan.py",
     "start:api": "ng serve --proxy-config proxy.conf.json",
-    "start:demo": "ng serve --configuration demo"
+    "start:demo": "ng serve --configuration demo",
+    "api:types": "openapi-typescript http://localhost:8095/openapi.json -o src/app/core/api/schema.d.ts",
+    "lint": "eslint src",
+    "format": "prettier --write \"src/**/*.{ts,html,scss}\""
   },
   "prettier": {
     "printWidth": 100,
@@ -26,11 +29,12 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/cdk": "^20.2.14",
+    "@angular/cdk": "~20.2.14",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",
     "@angular/forms": "^20.3.0",
+    "@angular/material": "~20.2.14",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
     "canvas-confetti": "^1.9.4",
@@ -44,12 +48,17 @@
     "@angular/compiler-cli": "^20.3.0",
     "@types/canvas-confetti": "^1.9.0",
     "@types/jasmine": "~5.1.0",
+    "angular-eslint": "^20.7.0",
+    "eslint": "^9.39.5",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2"
+    "openapi-typescript": "^7.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.72.1"
   }
 }

@@ -1,0 +1,35 @@
+:host {
+  display: grid;
+  grid-template-columns: 22px 56px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  opacity: 0.8;
+}
+:host(.boundary) {
+  border-top: 1.5px dashed var(--line);
+  margin-top: 4px;
+}
+time {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.what {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+@media (max-width: 560px) {
+  :host {
+    grid-template-columns: 22px 46px 1fr auto;
+    gap: 6px;
+    padding: 8px 4px;
+  }
+}

@@ -1,0 +1,45 @@
+:host {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  background: var(--surface);
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+}
+h3 {
+  font-size: 1rem;
+}
+mat-progress-bar {
+  --mat-progress-bar-active-indicator-color: var(--lc, var(--accent));
+  border-radius: 9px;
+}
+.meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.steps {
+  display: grid;
+  --mat-checkbox-label-text-size: 0.85rem;
+  margin-left: -8px;
+}
+.d {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+.next {
+  background: var(--sunk);
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: 0.86rem;
+}

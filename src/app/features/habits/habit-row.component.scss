@@ -1,0 +1,39 @@
+:host {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 4px 0;
+  border-top: 1px solid var(--line);
+}
+b {
+  display: block;
+  font-size: 0.95rem;
+}
+small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.dots {
+  display: flex;
+  gap: 3px;
+}
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.dots i.on {
+  background: var(--accent);
+}
+.dots i.today {
+  box-shadow: 0 0 0 1.5px var(--gold);
+}
+.streak {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-align: right;
+  margin-top: 3px;
+}

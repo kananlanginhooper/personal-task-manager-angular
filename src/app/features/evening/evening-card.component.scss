@@ -1,0 +1,34 @@
+:host {
+  display: block;
+}
+.evening {
+  background: linear-gradient(160deg, #1e3a4a, #2a2547);
+  color: #eef0f7;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.eyebrow {
+  color: #b9c2da;
+}
+h3 {
+  font-size: 1.2rem;
+  margin: 4px 0 6px;
+}
+p {
+  margin: 0 0 12px;
+  color: #d5daea;
+  font-size: 0.92rem;
+}
+.swap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.swap button {
+  --mat-button-outlined-label-text-color: #fff;
+  --mat-button-outlined-outline-color: rgba(255, 255, 255, 0.3);
+  --mat-button-outlined-disabled-label-text-color: rgba(255, 255, 255, 0.45);
+  --mat-button-outlined-disabled-outline-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+}

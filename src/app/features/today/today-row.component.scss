@@ -1,0 +1,62 @@
+:host {
+  display: grid;
+  grid-template-columns: 22px 56px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: var(--app-radius-m);
+  background: var(--surface);
+}
+:host(:hover) {
+  background: var(--sunk);
+}
+:host(.fixed) {
+  background: var(--accent-soft);
+}
+:host(.done) .what b {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+time {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.what {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+}
+.text {
+  min-width: 0;
+  cursor: pointer;
+}
+.text small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+}
+.step {
+  --mat-checkbox-label-text-size: 0.8rem;
+  margin-left: -8px;
+}
+.flag {
+  font-size: 0.72rem;
+  color: var(--crit);
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  :host {
+    grid-template-columns: 22px 46px 1fr auto;
+    gap: 6px;
+    padding: 6px 4px;
+  }
+}

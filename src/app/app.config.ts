@@ -1,20 +1,28 @@
-import { ApplicationConfig, provideAppInitializer, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
-import { CDK_DRAG_CONFIG } from '@angular/cdk/drag-drop';
-import { DataSource } from './data/data-source';
-import { ApiDataSource } from './data/api-data-source';
-import { DemoDataSource } from './data/demo-data-source';
-import { DATA_MODE } from './data/mode';
-import { embedded } from './module-context';
-import { loadRuntimeConfig } from './runtime-config';
+import {
+  ApplicationConfig,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection,
+} from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { ApiDataSource } from './core/data/api-data-source';
+import { DataSource } from './core/data/data-source';
+import { DemoDataSource } from './core/data/demo-data-source';
+import { DATA_MODE } from './core/data/mode';
+import { loadRuntimeConfig } from './core/runtime-config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    // runtime config from the back end before anything starts (not in the Pages demo or when a host page mounts it)
-    provideAppInitializer(() => (DATA_MODE === 'api' && !embedded() ? loadRuntimeConfig() : undefined)),
-    // drag previews stay inside the shadow root, where the styles are
-    { provide: CDK_DRAG_CONFIG, useValue: { previewContainer: 'parent' } },
+    // runtime config from the back end before anything starts (the Pages demo has no back end)
+    provideAppInitializer(() => (DATA_MODE === 'api' ? loadRuntimeConfig() : undefined)),
+    // <mat-icon>name</mat-icon> draws from Material Symbols (loaded in index.html)
+    provideAppInitializer(() => {
+      inject(MatIconRegistry).setDefaultFontSetClass('material-symbols-outlined');
+    }),
+    // the demo build swaps data/mode.ts, so the same components run on browser-only sample data
     { provide: DataSource, useClass: DATA_MODE === 'demo' ? DemoDataSource : ApiDataSource },
   ],
 };
