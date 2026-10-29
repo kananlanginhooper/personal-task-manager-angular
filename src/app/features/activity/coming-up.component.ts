@@ -3,7 +3,7 @@ import { PlanStore } from '../../core/plan-store';
 import { CardComponent } from '../../shared/card/card.component';
 import { DOW, MON, fmt12, parseD } from '../../shared/format';
 
-/** Upcoming reminders, then the recurring rules. */
+/** Upcoming reminders (each repeat once, at its next date), then the recurring rules. */
 @Component({
   selector: 'app-coming-up',
   imports: [CardComponent],
@@ -47,6 +47,8 @@ export class ComingUpComponent {
       .tasks()
       .filter((t) => t.remind && t.date >= this.store.today && !t.done && t.status !== 'skipped')
       .sort((a, b) => a.date.localeCompare(b.date))
+      // a repeat shows once, at its next date
+      .filter((t, i, list) => !t.recurring || list.findIndex((x) => x.title === t.title) === i)
       .slice(0, 6),
   );
 
