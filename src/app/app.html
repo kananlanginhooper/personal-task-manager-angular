@@ -11,6 +11,9 @@
     <div class="status">Loading your plan…</div>
   }
 
+  @if (store.loaded()) {
+    <app-now-card />
+  }
   <app-recap-banner />
   @if (store.overdue().length) {
     <app-replan-banner />

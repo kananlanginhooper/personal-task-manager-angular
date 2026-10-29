@@ -8,9 +8,10 @@ The API is [personal-task-manager-fastapi](https://github.com/kananlanginhooper/
 
 ## What it does
 
+- **Now.** The top card shows the task on now (or next) and the next daily win, each one tap to check off.
 - **Today and this week.** Drag a task by its ⋮⋮ grip to another time or day; the start time fits around its neighbors. Fixed events stay put.
 - **Your own estimates.** Click a task to change its time or estimate and say why. The original estimate is kept beside yours, and every change goes into a log.
-- **Missed days get rebuilt, not dropped.** Anything that slipped moves to the lightest open evening; big tasks are split first.
+- **Missed days get rebuilt, not dropped.** Anything that slipped moves to the lightest open evening; big tasks are split first and both halves are placed. Fixed events and repeats that passed just lapse, since the next one is already planned.
 - **Celebrations.** Confetti on every check-off; fireworks and a full-screen card for the hard ones, streak milestones, perfect days and every fifth win in a row. Sound can be turned off.
 - **Trophies and a Sunday recap.** Trophy rules are data (habit streaks, steps done, totals), so they can be about anything.
 - **Notes for the assistant.** Leave feedback from anywhere; it shows as "Waiting" until it's read and answered.

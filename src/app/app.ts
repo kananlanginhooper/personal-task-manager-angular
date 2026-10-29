@@ -16,6 +16,7 @@ import { HabitsPanelComponent } from './features/habits/habits-panel.component';
 import { DemoBarComponent } from './features/header/demo-bar.component';
 import { PageHeaderComponent } from './features/header/page-header.component';
 import { NotesPanelComponent } from './features/notes/notes-panel.component';
+import { NowCardComponent } from './features/now/now-card.component';
 import { RecapDialog } from './features/recap/recap.dialog';
 import { ShoppingPanelComponent } from './features/shopping/shopping-panel.component';
 import { TodayPanelComponent } from './features/today/today-panel.component';
@@ -29,6 +30,7 @@ import { WeekPanelComponent } from './features/week/week-panel.component';
     CdkDropListGroup,
     DemoBarComponent,
     PageHeaderComponent,
+    NowCardComponent,
     RecapBannerComponent,
     ReplanBannerComponent,
     TodayPanelComponent,

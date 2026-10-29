@@ -1,0 +1,39 @@
+:host {
+  display: block;
+  margin-bottom: 16px;
+}
+.panel {
+  border-left: 4px solid var(--accent);
+}
+h2 {
+  font-family: inherit;
+  margin-bottom: 6px;
+}
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 8px 24px;
+}
+.slot {
+  min-width: 0;
+}
+.slot b {
+  font-size: 1.05rem;
+}
+.fixed {
+  padding: 8px 0 4px;
+}
+small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+mat-checkbox + small {
+  padding-left: 40px;
+}
+@media (max-width: 640px) {
+  .cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

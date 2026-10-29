@@ -124,13 +124,18 @@ export class DemoDataSource extends DataSource {
   }
   splitTask(id: string, reason?: string | null) {
     const t = this.task(id);
-    const base = t.title.replace(/ \(part \d\)$/, '');
+    const part = / \(part (\d+)\)$/;
+    const base = t.title.replace(part, '');
+    const taken = this.db.tasks
+      .filter((x) => x.title.replace(part, '') === base)
+      .map((x) => Number(part.exec(x.title)?.[1] ?? 0));
+    const first = part.exec(t.title)?.[1] ?? '1';
     const half = Math.max(5, Math.round(t.est / 2 / 5) * 5);
     t.origEst = t.origEst ?? t.est;
     const second: Task = {
       ...structuredClone(t),
       id: this.id(),
-      title: `${base} (part 2)`,
+      title: `${base} (part ${Math.max(1, ...taken) + 1})`,
       est: Math.max(5, t.est - half),
       start: null,
       done: false,
@@ -138,7 +143,7 @@ export class DemoDataSource extends DataSource {
       splitFrom: t.id,
       date: addDays(t.date, 1),
     };
-    t.title = `${base} (part 1)`;
+    t.title = `${base} (part ${first})`;
     t.est = half;
     this.db.tasks.push(second);
     this.log({

@@ -21,6 +21,9 @@ import { TrophyFacts, progress } from './trophy-rules';
 import { taskTotal as total } from '../shared/format';
 export { total };
 
+/** A half made by splitting: "(part N)" at the end, or split from another task. Never split again by a rebuild. */
+export const isPiece = (t: Task) => !!t.splitFrom || / \(part \d+\)$/.test(t.title);
+
 const errorText = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
 /** Page state. Every action saves through the DataSource, then updates the signals. */
@@ -63,9 +66,10 @@ export class PlanStore {
     const map = new Map(this.areas().map((a) => [a.id, a.color]));
     return (id?: string | null) => (id && map.get(id)) || '#1E6A50';
   });
+  /** Missed one-off tasks. Fixed events and repeats that passed just lapse: the next one is already planned. */
   readonly overdue = computed(() =>
     this.tasks().filter(
-      (t) => t.date < this.today && !t.done && !t.locked && t.status !== 'skipped',
+      (t) => t.date < this.today && !t.done && !t.locked && !t.recurring && t.status !== 'skipped',
     ),
   );
 
@@ -279,7 +283,7 @@ export class PlanStore {
     if (!r) return;
     this.tasks.update((l) => [...l.map((x) => (x.id === r[0].id ? r[0] : x)), r[1]]);
     this.fx.note(
-      'Two smaller pieces. Part 2 is on the next day; drag it wherever it fits.',
+      'Two smaller pieces. The new one is on the next day; drag it wherever it fits.',
       'Split',
       '½',
     );
@@ -288,26 +292,31 @@ export class PlanStore {
     const r = await this.run(() => this.ds.skipTask(t.id, reason));
     if (r) this.replaceTask(r);
   }
-  /** Move each missed task to the lightest upcoming evening; split anything over 30 minutes first. */
+  /**
+   * Move each missed task to the lightest upcoming evening. Anything over 30 minutes is split first, unless it is
+   * already a piece of a split, and both halves are placed.
+   */
   async rebuild(at: { x: number; y: number }) {
     const load: Record<string, number> = {};
     for (let i = 0; i < 7; i++) {
       const d = addDays(this.today, i);
       load[d] = this.tasksOn(d).reduce((a, t) => a + total(t), 0);
     }
-    for (const t0 of this.overdue()) {
-      let t = t0;
+    const queue = [...this.overdue()];
+    for (let t = queue.shift(); t; t = queue.shift()) {
       let cands = Object.keys(load);
       if (t.closeBy) cands = cands.filter(isWeekend);
       if (!cands.length) cands = [addDays(mondayOf(this.today), 13)];
       const best = cands.sort(
         (a, b) => load[a] / this.capacityOf(a) - load[b] / this.capacityOf(b),
       )[0];
-      if (t.est > 30 && !t.closeBy) {
-        const r = await this.run(() => this.ds.splitTask(t.id, 'rebuild: big task split'));
+      if (t.est > 30 && !t.closeBy && !isPiece(t)) {
+        const id = t.id;
+        const r = await this.run(() => this.ds.splitTask(id, 'rebuild: big task split'));
         if (r) {
           this.tasks.update((l) => [...l.map((x) => (x.id === r[0].id ? r[0] : x)), r[1]]);
           t = r[0];
+          queue.push(r[1]);
         }
       }
       const last = this.tasksOn(best)
