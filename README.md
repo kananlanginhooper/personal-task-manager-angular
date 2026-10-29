@@ -8,7 +8,7 @@ The API is [personal-task-manager-fastapi](https://github.com/kananlanginhooper/
 
 ## What it does
 
-- **Today and this week.** Drag a task by its ⋮⋮ grip to another time or day; the start time fits around its neighbours. Fixed events stay put.
+- **Today and this week.** Drag a task by its ⋮⋮ grip to another time or day; the start time fits around its neighbors. Fixed events stay put.
 - **Your own estimates.** Click a task to change its time or estimate and say why. The original estimate is kept beside yours, and every change goes into a log.
 - **Missed days get rebuilt, not dropped.** Anything that slipped moves to the lightest open evening; big tasks are split first.
 - **Celebrations.** Confetti on every check-off; fireworks and a full-screen card for the hard ones, streak milestones, perfect days and every fifth win in a row. Sound can be turned off.
@@ -34,17 +34,15 @@ npm run start:api                       # talks to the API through /api
 ## Build and deploy
 
 ```bash
-npm run build                           # dist/personal-task-manager/browser, uses /api on the same address
+npm run build                           # dist/personal-task-manager/browser
 npm run build:demo                      # docs/, the GitHub Pages demo
 ```
 
-`deploy/serve.py` serves the built app and passes `/api/*` through to the API, so the page only talks to one address:
+In production the API serves this app: clone both repos side by side and run `docker compose up -d --build` in [personal-task-manager-fastapi](https://github.com/kananlanginhooper/personal-task-manager-fastapi). Its image builds this UI and serves it with the API on one address.
 
-```bash
-API_URL=http://127.0.0.1:8095 python3 deploy/serve.py --port 8096 --root dist/personal-task-manager/browser
-```
+Nothing about hosts, ports or paths is compiled in. Before starting, the app loads `api/config` relative to its `<base href>` and calls the API at the `apiBase` it gets back. The back end sets `<base href>` from `UI_BASE_PATH`, so one build works at `http://<host>:<port>/`, under a path prefix, or at `https://<app>.<domain>`. The demo build skips this and needs no server.
 
-To point a build at a different API, add `<meta name="api-base" content="https://example/api">` to `index.html`.
+Older options still work: `deploy/serve.py` serves the built app and passes `/api/*` through to an API, and `<meta name="api-base" content="...">` in `index.html` overrides the API base.
 
 ## Privacy check before every push
 
