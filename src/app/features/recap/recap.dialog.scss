@@ -1,0 +1,103 @@
+mat-dialog-content {
+  display: grid;
+  gap: 18px;
+}
+.recap-head {
+  text-align: center;
+  display: grid;
+  gap: 4px;
+}
+.recap-big {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(3rem, 10vw, 5rem);
+  line-height: 0.9;
+  background: linear-gradient(100deg, #e0a019, #d25f25 50%, #fa4d8b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.tile {
+  background: var(--sunk);
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.tile b {
+  display: block;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+.tile small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.heat {
+  overflow-x: auto;
+}
+table {
+  border-collapse: separate;
+  border-spacing: 3px;
+  font-size: 0.78rem;
+  margin: 0 auto;
+}
+th {
+  font-weight: 700;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0 2px;
+}
+td.n {
+  text-align: right;
+  padding-right: 8px;
+  white-space: nowrap;
+  color: var(--ink);
+}
+td.c {
+  width: 22px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--line);
+}
+td.c.on {
+  background: var(--accent);
+}
+h4 {
+  font-family: var(--display);
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+}
+h4.gap {
+  margin-top: 12px;
+}
+ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.9rem;
+  display: grid;
+  gap: 3px;
+}
+.small {
+  font-size: 0.82rem;
+  margin-top: 6px;
+}
+.rcols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 560px) {
+  .tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rcols {
+    grid-template-columns: 1fr;
+  }
+}

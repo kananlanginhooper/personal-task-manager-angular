@@ -1,0 +1,46 @@
+<app-card
+  heading="Shopping list"
+  [eyebrow]="need().length ? need().length + ' to buy' : 'all set'"
+  id="shopH"
+>
+  <div class="shop">
+    @for (i of need(); track i.id) {
+      <mat-checkbox
+        [aria-label]="'Got ' + i.item"
+        (change)="store.setNeed(i, false, pointOf($event))"
+      >
+        {{ i.item }}
+        @if (i.note) {
+          <small>{{ i.note }}</small>
+        }
+      </mat-checkbox>
+    } @empty {
+      <div class="empty">Nothing to buy. Nice.</div>
+    }
+  </div>
+  @if (stocked().length || got().length) {
+    <mat-chip-set class="stocked" aria-label="Stocked and bought items">
+      @for (i of stocked(); track i.id) {
+        <mat-chip class="in-stock" disableRipple>{{ i.item }}: stocked</mat-chip>
+      }
+      @for (i of got(); track i.id) {
+        <mat-chip (click)="store.setNeed(i, true)" title="Add back to the list"
+          >+ {{ i.item }}</mat-chip
+        >
+      }
+    </mat-chip-set>
+  }
+  <form class="addrow" (submit)="addItem($event)">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <input
+        matInput
+        name="shopInput"
+        [ngModel]="newItem()"
+        (ngModelChange)="newItem.set($event)"
+        placeholder="Add an item"
+        aria-label="Add shopping item"
+      />
+    </mat-form-field>
+    <button matButton="filled" type="submit">Add</button>
+  </form>
+</app-card>

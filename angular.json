@@ -50,18 +50,22 @@
                 "input": "public"
               }
             ],
-            "styles": [],
+            "styles": [
+              "src/styles/theme.scss",
+              "src/styles/game-plan.scss"
+            ],
             "allowedCommonJsDependencies": [
               "canvas-confetti"
-            ]
+            ],
+            "inlineStyleLanguage": "scss"
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "700kB",
-                  "maximumError": "1.5MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -80,8 +84,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "700kB",
-                  "maximumError": "1.5MB"
+                  "maximumWarning": "1MB",
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -92,15 +96,16 @@
               "outputHashing": "all",
               "fileReplacements": [
                 {
-                  "replace": "src/app/data/mode.ts",
-                  "with": "src/app/data/mode.demo.ts"
+                  "replace": "src/app/core/data/mode.ts",
+                  "with": "src/app/core/data/mode.demo.ts"
                 }
               ],
               "outputPath": {
                 "base": "docs",
                 "browser": ""
               },
-              "baseHref": "/personal-task-manager-angular/"
+              "baseHref": "/personal-task-manager-angular/",
+              "deleteOutputPath": false
             }
           },
           "defaultConfiguration": "production"
@@ -126,10 +131,7 @@
         "test": {
           "builder": "@angular/build:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": [],
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {

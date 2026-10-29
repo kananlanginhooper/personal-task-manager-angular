@@ -1,0 +1,46 @@
+:host {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 4px;
+  align-items: start;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  padding: 6px 7px 6px 3px;
+  border-radius: 8px;
+  background: var(--surface);
+  border-left: 3px solid var(--lc, var(--accent));
+}
+:host(.fixed) {
+  background: var(--accent-soft);
+}
+:host(.call) {
+  background: var(--gold-soft);
+  border-left-color: var(--gold);
+}
+:host(.done) .t > span {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+:host(.warnc) {
+  box-shadow: inset 0 0 0 1.5px var(--crit);
+}
+.grip {
+  width: 16px;
+  height: auto;
+  min-height: 22px;
+}
+.t {
+  cursor: pointer;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+small {
+  display: block;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+small.problem {
+  color: var(--crit);
+  font-family: inherit;
+}

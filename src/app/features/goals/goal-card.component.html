@@ -1,0 +1,22 @@
+@let p = project();
+<header>
+  <h3>{{ p.title }}</h3>
+  <span class="pill" [class]="'pill ' + p.prio">{{ prioLabel() }}</span>
+</header>
+<mat-progress-bar mode="determinate" [value]="pct()" />
+<div class="meta">
+  <span>{{ doneCount() }} of {{ p.steps.length }} steps</span><span>{{ meta() }}</span>
+</div>
+<div class="steps">
+  @for (s of p.steps; track $index) {
+    <mat-checkbox
+      [checked]="s.done"
+      (change)="stepToggled.emit({ index: $index, done: $event.checked, at: pointOf($event) })"
+    >
+      <span [class.d]="s.done">{{ s.t }}</span>
+    </mat-checkbox>
+  }
+</div>
+@if (next(); as n) {
+  <div class="next"><b>Next:</b> {{ n }}</div>
+}

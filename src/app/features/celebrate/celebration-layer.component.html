@@ -1,0 +1,35 @@
+@if (fx.hero(); as h) {
+  <div
+    class="hero go"
+    role="status"
+    aria-live="assertive"
+    (click)="fx.dismissHero()"
+    (keydown.enter)="fx.dismissHero()"
+  >
+    <div class="hero-card">
+      <div class="hero-star" aria-hidden="true">★</div>
+      <div class="hero-head">{{ h.head }}</div>
+      <div class="hero-msg">{{ h.msg }}</div>
+      @if (h.combo > 1) {
+        <div class="hero-combo">{{ h.combo }} wins in a row</div>
+      }
+    </div>
+  </div>
+}
+<button
+  type="button"
+  class="soundbtn"
+  (click)="fx.toggleSound()"
+  [attr.aria-pressed]="fx.soundOn()"
+>
+  <mat-icon>{{ fx.soundOn() ? 'volume_up' : 'volume_off' }}</mat-icon
+  >{{ fx.soundOn() ? 'Sound on' : 'Sound off' }}
+</button>
+@let t = fx.toast();
+<div class="toast" [class.show]="!!t" [class.note]="t?.note" role="status">
+  <span class="big">{{ t?.icon ?? '★' }}</span>
+  <div>
+    <b>{{ t?.title }}</b
+    ><span>{{ t?.msg }}</span>
+  </div>
+</div>

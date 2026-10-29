@@ -1,0 +1,24 @@
+.areas {
+  display: block;
+  margin-bottom: 12px;
+}
+.area-dot.round {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+}
+.count {
+  opacity: 0.7;
+  margin-left: 4px;
+}
+.areanote {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 12px;
+}
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 12px;
+}

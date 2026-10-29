@@ -1,0 +1,64 @@
+.weeknav {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(140px, 1fr));
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.day {
+  background: var(--sunk);
+  border-radius: 12px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  box-shadow: inset 0 0 0 1px var(--line);
+  min-height: 160px;
+}
+.day.today {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+.day.today app-week-chip {
+  background: var(--sunk);
+}
+.day header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.day header b {
+  font-family: var(--display);
+  font-size: 1rem;
+}
+.day header span {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+mat-progress-bar {
+  --mat-progress-bar-track-height: 5px;
+  --mat-progress-bar-active-indicator-height: 5px;
+  border-radius: 9px;
+}
+mat-progress-bar.heavy {
+  --mat-progress-bar-active-indicator-color: var(--warn);
+}
+.empty.small {
+  font-size: 0.78rem;
+}
+
+@media (max-width: 560px) {
+  .week {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+  .day {
+    min-height: 0;
+  }
+}

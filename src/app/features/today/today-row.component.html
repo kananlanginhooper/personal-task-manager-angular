@@ -1,0 +1,57 @@
+@let t = task();
+@if (t.locked) {
+  <span class="grip lock" matTooltip="Fixed event">•</span>
+} @else {
+  <span class="grip" cdkDragHandle matTooltip="Drag to move" aria-label="Drag to move"
+    ><mat-icon>drag_indicator</mat-icon></span
+  >
+}
+<time>{{ t.start ? fmt12(t.start) : 'any' }}</time>
+<div class="what">
+  @if (t.locked) {
+    <i class="area-dot" [style.background]="color()"></i>
+  } @else {
+    <mat-checkbox
+      [checked]="t.done"
+      [aria-label]="'Done: ' + t.title"
+      (change)="toggled.emit({ done: $event.checked, at: pointOf($event) })"
+    />
+  }
+  <span
+    class="text"
+    role="button"
+    tabindex="0"
+    (click)="opened.emit()"
+    (keydown.enter)="opened.emit()"
+  >
+    <b>{{ t.title }}</b>
+    <small
+      >{{ sub() }}
+      @if (problem(); as p) {
+        <span class="flag"> · {{ p }}</span>
+      }
+    </small>
+    @if (t.steps?.length) {
+      <span class="steps">
+        @for (s of t.steps; track $index) {
+          <mat-checkbox
+            class="step"
+            [checked]="s.done"
+            (click)="$event.stopPropagation()"
+            (change)="
+              stepToggled.emit({ index: $index, done: $event.checked, at: pointOf($event) })
+            "
+            >{{ s.t }}</mat-checkbox
+          >
+        }
+      </span>
+    }
+  </span>
+</div>
+<span
+  class="dur"
+  [class.changed]="changed()"
+  [matTooltip]="changed() ? 'Your estimate. Originally ' + t.origEst + ' m' : ''"
+>
+  {{ changed() ? t.origEst + '→' : '' }}{{ fmtDur(total()) }}
+</span>

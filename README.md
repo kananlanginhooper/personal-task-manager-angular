@@ -29,7 +29,22 @@ npm install
 npm run start:demo                      # sample data, no server needed
 cp proxy.conf.example.json proxy.conf.json
 npm run start:api                       # talks to the API through /api
+npm run api:types                       # regenerate src/app/core/api/schema.d.ts from the running API's OpenAPI
+npm test && npm run lint                # unit tests (Karma), angular-eslint
 ```
+
+Angular 20 with Angular Material and the CDK (drag and drop), standalone OnPush components and signals, zoneless:
+
+```
+src/app/
+  core/        the page state (plan-store), data sources (API and demo), runtime config, celebrations, models
+  shared/      small reusable pieces: card, progress ring, trophy cup, format helpers
+  features/    one folder per area: today, week, habits, evening, shopping, goals, notes, trophies,
+               activity, header, banners, editor and recap dialogs, celebration layer
+src/styles/    theme.scss (shared by every home dashboard, copied unchanged) + game-plan.scss (this app's layer)
+```
+
+Each feature has a panel component that reads the store and small presentational rows that only take inputs and emit outputs. Data types come from the API's OpenAPI; the demo swaps in a browser-only data source behind the same interface.
 
 ## Build and deploy
 
