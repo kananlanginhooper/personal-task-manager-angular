@@ -11,33 +11,31 @@
     <div class="status">Loading your plan…</div>
   }
 
-  @if (store.loaded()) {
-    <app-now-card />
-  }
   <app-recap-banner />
   @if (store.overdue().length) {
     <app-replan-banner />
   }
 
-  <div class="main">
-    <div class="col" cdkDropListGroup>
-      <app-today-panel />
-      <app-week-panel />
-    </div>
-    <div class="col">
-      <app-habits-panel />
-      <app-evening-card />
-      <app-shopping-panel />
-    </div>
-  </div>
-  <app-goals-panel />
-  <app-notes-panel />
-  <app-trophy-shelf />
-  <div class="bottom">
-    <app-coming-up />
-    <app-recent-wins />
-    <app-change-log />
-  </div>
+  <!-- the today and week lists share one drop group, so tasks drag between them -->
+  <app-board cdkDropListGroup>
+    <app-tile tileKey="now" label="Now">
+      @if (store.loaded()) {
+        <app-now-card />
+      }
+    </app-tile>
+    <app-tile tileKey="today" label="Today's plan"><app-today-panel /></app-tile>
+    <app-tile tileKey="habits" label="Daily small wins"><app-habits-panel /></app-tile>
+    <app-tile tileKey="week" label="This week"><app-week-panel /></app-tile>
+    <app-tile tileKey="evening" label="Evening"><app-evening-card /></app-tile>
+    <app-tile tileKey="shopping" label="Shopping"><app-shopping-panel /></app-tile>
+    <app-tile tileKey="goals" label="Goals"><app-goals-panel /></app-tile>
+    <app-tile tileKey="notes" label="Notes"><app-notes-panel /></app-tile>
+    <app-tile tileKey="trophies" label="Trophies"><app-trophy-shelf /></app-tile>
+    <app-tile tileKey="coming" label="Coming up"><app-coming-up /></app-tile>
+    <app-tile tileKey="wins" label="Recent wins"><app-recent-wins /></app-tile>
+    <app-tile tileKey="log" label="Your changes"><app-change-log /></app-tile>
+  </app-board>
+  <app-layout-bar />
 </div>
 
 <app-celebration-layer />

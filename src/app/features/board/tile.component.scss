@@ -1,0 +1,98 @@
+:host {
+  position: relative;
+  display: block;
+  min-width: 0;
+  padding-bottom: 20px; // the gap to the card below (GAP in board-layout.ts)
+  align-self: start;
+}
+.body {
+  display: flow-root; // child margins stay inside, so the measured height is the real one
+  min-width: 0;
+}
+:host(.sized) .body {
+  overflow: auto;
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+}
+:host(.vacant) {
+  visibility: hidden;
+  padding: 0;
+}
+:host(.moving) .body {
+  opacity: 0.55;
+  outline: 2px dashed var(--accent);
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+:host(.resizing) .body {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 14px;
+}
+
+// the move handle: a dotted pill on the card's top edge
+.grab {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  cursor: grab;
+  touch-action: none;
+  background:
+    radial-gradient(circle, var(--muted) 1.2px, transparent 1.6px) center / 7px 5px repeat-x,
+    var(--sunk);
+  box-shadow: inset 0 0 0 1px var(--line);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+// resize handle: three diagonal lines in the corner
+.corner {
+  position: absolute;
+  right: 3px;
+  bottom: 23px;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  touch-action: none;
+  background: linear-gradient(
+    135deg,
+    transparent 45%,
+    var(--muted) 45% 52%,
+    transparent 52% 64%,
+    var(--muted) 64% 71%,
+    transparent 71% 83%,
+    var(--muted) 83% 90%,
+    transparent 90%
+  );
+  border-bottom-right-radius: 12px;
+  opacity: 0.3;
+  transition: opacity 0.15s;
+}
+:host(:hover) .grab,
+.grab:focus-visible,
+:host(.moving) .grab {
+  opacity: 1;
+}
+:host(:hover) .corner,
+:host(.resizing) .corner {
+  opacity: 0.9;
+}
+@media (pointer: coarse) {
+  .grab {
+    opacity: 0.7;
+    height: 22px;
+    top: -11px;
+    width: 56px;
+  }
+  .corner {
+    opacity: 0.6;
+    width: 28px;
+    height: 28px;
+  }
+}
