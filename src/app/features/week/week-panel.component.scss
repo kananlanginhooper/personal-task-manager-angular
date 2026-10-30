@@ -61,4 +61,14 @@ mat-progress-bar.heavy {
   .day {
     min-height: 0;
   }
+  // the week's arrows, dates and Add share one full-width row
+  .weeknav {
+    width: 100%;
+  }
+  .weeknav span {
+    flex: 1;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 0.85rem;
+  }
 }

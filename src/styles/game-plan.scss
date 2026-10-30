@@ -176,3 +176,36 @@ h2 {
 .cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
   transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+// Phones and touch screens: 44 px tap targets, and 16 px inputs so iOS doesn't zoom in on focus.
+@media (max-width: 600px), (pointer: coarse) {
+  html {
+    --mat-checkbox-state-layer-size: 44px;
+    --mat-icon-button-state-layer-size: 44px;
+    --mat-chip-container-height: 44px;
+    --mat-form-field-container-text-size: 16px;
+    --mat-button-filled-container-height: 44px;
+    --mat-button-outlined-container-height: 44px;
+    --mat-button-text-container-height: 44px;
+    --mat-button-tonal-container-height: 44px;
+    --mat-button-protected-container-height: 44px;
+  }
+  .mat-mdc-button-base.small {
+    --mat-button-filled-container-height: 44px;
+    --mat-button-outlined-container-height: 44px;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  // the drag handle keeps its look but takes touches from a 44 px square around it
+  .grip {
+    position: relative;
+  }
+  .grip::after {
+    content: '';
+    position: absolute;
+    inset: -8px -11px;
+  }
+}
