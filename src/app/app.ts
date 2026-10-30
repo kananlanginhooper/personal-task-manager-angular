@@ -6,6 +6,9 @@ import { PlanStore } from './core/plan-store';
 import { ChangeLogComponent } from './features/activity/change-log.component';
 import { ComingUpComponent } from './features/activity/coming-up.component';
 import { RecentWinsComponent } from './features/activity/recent-wins.component';
+import { BoardComponent } from './features/board/board.component';
+import { LayoutBarComponent } from './features/board/layout-bar.component';
+import { TileComponent } from './features/board/tile.component';
 import { RecapBannerComponent } from './features/banners/recap-banner.component';
 import { ReplanBannerComponent } from './features/banners/replan-banner.component';
 import { CelebrationLayerComponent } from './features/celebrate/celebration-layer.component';
@@ -28,6 +31,9 @@ import { WeekPanelComponent } from './features/week/week-panel.component';
   selector: 'app-root',
   imports: [
     CdkDropListGroup,
+    BoardComponent,
+    TileComponent,
+    LayoutBarComponent,
     DemoBarComponent,
     PageHeaderComponent,
     NowCardComponent,

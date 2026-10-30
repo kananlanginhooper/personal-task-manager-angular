@@ -209,3 +209,23 @@ h2 {
     inset: -8px -11px;
   }
 }
+
+// ---- the card board (features/board): titles are drag handles, sized cards scroll inside their own box
+app-board:not(.stack) app-tile .panel-head,
+app-board:not(.stack) app-tile h2 {
+  cursor: grab;
+}
+app-board.busy,
+app-board.busy * {
+  user-select: none;
+  cursor: grabbing !important;
+}
+app-board.sizing,
+app-board.sizing * {
+  user-select: none;
+  cursor: nwse-resize !important;
+}
+app-tile.sized .panel {
+  box-shadow: none;
+  background: transparent;
+}
