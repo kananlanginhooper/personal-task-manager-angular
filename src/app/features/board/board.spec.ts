@@ -67,14 +67,14 @@ describe('board layout', () => {
     </app-board>
   `,
 })
-class Host {}
+class HostComponent {}
 
 describe('board tiles', () => {
   beforeEach(() => localStorage.removeItem(KEY));
 
   async function setup() {
     TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
-    const f = TestBed.createComponent(Host);
+    const f = TestBed.createComponent(HostComponent);
     document.body.append(f.nativeElement);
     await frame();
     await f.whenStable();
