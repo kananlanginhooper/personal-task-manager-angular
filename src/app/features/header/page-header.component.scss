@@ -46,6 +46,13 @@ p {
   flex: none;
   margin-left: auto;
 }
+// On a phone the header is just the date, today's numbers and the score: no headline or how-to line.
+@media (max-width: 600px) {
+  h1,
+  .hint {
+    display: none;
+  }
+}
 @media (max-width: 560px) {
   .score {
     width: 100%;
