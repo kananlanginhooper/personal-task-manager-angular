@@ -15,7 +15,12 @@ import { ProgressRingComponent } from '../../shared/progress-ring/progress-ring.
       <h1>
         {{ headline()[0] }} <span>{{ headline()[1] }}</span>
       </h1>
-      <p>{{ capLine() }}</p>
+      <p>
+        {{ capLine()
+        }}<span class="hint">
+          · the rest is breathing room on purpose. Drag ⋮⋮ to move, click a task to change it.</span
+        >
+      </p>
     </div>
     <div class="score" aria-live="polite">
       <app-progress-ring [value]="score().pct" />
@@ -69,6 +74,6 @@ export class PageHeaderComponent {
         .tasksOn(s.today)
         .filter((t) => !t.work)
         .reduce((a, t) => a + taskTotal(t), 0);
-    return `${fmtDur(s.capacityOf(s.today))} free today · ${fmtDur(load)} planned · the rest is breathing room on purpose. Drag ⋮⋮ to move, click a task to change it.`;
+    return `${fmtDur(s.capacityOf(s.today))} free today · ${fmtDur(load)} planned`;
   });
 }
