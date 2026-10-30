@@ -138,6 +138,29 @@
   height: 18px;
 }
 
+// on a phone it shrinks to a round 44 px icon so it covers less of the page; the label stays for screen readers
+@media (max-width: 600px) {
+  .soundbtn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+  .soundbtn mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+  }
+  .soundbtn .label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .toast {
     transition: none;

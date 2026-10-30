@@ -44,3 +44,16 @@ small.problem {
   color: var(--crit);
   font-family: inherit;
 }
+
+// a task is one tap to open, so it gets a full 44 px row on touch screens
+@media (max-width: 600px), (pointer: coarse) {
+  :host {
+    align-items: center;
+  }
+  .t {
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

@@ -22,8 +22,8 @@
   (click)="fx.toggleSound()"
   [attr.aria-pressed]="fx.soundOn()"
 >
-  <mat-icon>{{ fx.soundOn() ? 'volume_up' : 'volume_off' }}</mat-icon
-  >{{ fx.soundOn() ? 'Sound on' : 'Sound off' }}
+  <mat-icon aria-hidden="true">{{ fx.soundOn() ? 'volume_up' : 'volume_off' }}</mat-icon
+  ><span class="label">{{ fx.soundOn() ? 'Sound on' : 'Sound off' }}</span>
 </button>
 @let t = fx.toast();
 <div class="toast" [class.show]="!!t" [class.note]="t?.note" role="status">

@@ -37,3 +37,21 @@ small {
   text-align: right;
   margin-top: 3px;
 }
+
+// On a phone the 14-day dots go under the name instead of squeezing it.
+@media (max-width: 600px) {
+  :host {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  :host > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 0 8px 44px;
+  }
+  .streak {
+    margin-top: 0;
+  }
+}

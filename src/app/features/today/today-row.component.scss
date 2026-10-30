@@ -33,6 +33,14 @@ time {
   min-width: 0;
   cursor: pointer;
 }
+@media (max-width: 600px), (pointer: coarse) {
+  .text {
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
 .text small {
   display: block;
   color: var(--muted);
