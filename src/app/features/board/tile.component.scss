@@ -6,8 +6,10 @@
   align-self: start;
 }
 .body {
-  display: flow-root; // child margins stay inside, so the measured height is the real one
   min-width: 0;
+}
+.content {
+  display: flow-root; // child margins stay inside, so the measured height is the real one
 }
 :host(.sized) .body {
   overflow: auto;
@@ -18,6 +20,9 @@
 :host(.vacant) {
   visibility: hidden;
   padding: 0;
+}
+:host(.hidden) {
+  display: none;
 }
 :host(.moving) .body {
   opacity: 0.55;

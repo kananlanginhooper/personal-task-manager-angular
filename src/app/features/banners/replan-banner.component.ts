@@ -14,7 +14,7 @@ import { pointOf } from '../../shared/point';
     @let n = store.overdue().length;
     <div class="icon"><mat-icon>autorenew</mat-icon></div>
     <div>
-      <b
+      <b class="tile-title"
         >{{ n }} thing{{ n > 1 ? 's' : '' }} slipped past {{ n > 1 ? 'their' : 'its' }} day, and
         that's fine.</b
       >

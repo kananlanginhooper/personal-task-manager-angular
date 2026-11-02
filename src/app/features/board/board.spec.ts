@@ -1,6 +1,12 @@
 import { Component, provideZonelessChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { BoardLayout, DEFAULT_LAYOUTS, bandFor, normalize } from '../../core/layout/board-layout';
+import {
+  BoardLayout,
+  DEFAULT_LAYOUTS,
+  TILE_ORDER,
+  bandFor,
+  normalize,
+} from '../../core/layout/board-layout';
 import { BoardComponent } from './board.component';
 import { TileComponent } from './tile.component';
 
@@ -19,10 +25,14 @@ describe('board layout', () => {
 
   it('makes a saved layout whole: drops unknown cards, adds new ones, clamps sizes', () => {
     const l = normalize(
-      { order: ['week', 'gone', 'week'], size: { week: { w: 99, h: 10 } } },
+      {
+        order: ['week', 'gone', 'week', ...TILE_ORDER.filter((k) => k !== 'replan')],
+        size: { week: { w: 99, h: 10 } },
+      },
       'standard',
     );
-    expect(l.order[0]).toBe('week');
+    // a card added since the layout was saved (replan) joins at its default place
+    expect(l.order.slice(0, 2)).toEqual(['replan', 'week']);
     expect(l.order).not.toContain('gone');
     expect(l.order.length).toBe(DEFAULT_LAYOUTS.standard.order.length);
     expect(l.size['week']).toEqual({ w: 12, h: 80 });
@@ -33,7 +43,7 @@ describe('board layout', () => {
     TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
     const s = TestBed.inject(BoardLayout);
     s.band.set('wide');
-    s.move('log', 'now');
+    s.move('log', 'replan');
     s.resize('log', { w: 3, h: 200 }, true);
     expect(s.current().order[0]).toBe('log');
     expect(s.isCustom()).toBeTrue();
@@ -41,13 +51,26 @@ describe('board layout', () => {
 
     s.band.set('standard');
     expect(s.isCustom()).toBeFalse();
-    expect(s.current().order[0]).toBe('now');
+    expect(s.current().order[1]).toBe('now');
 
     s.band.set('wide');
     expect(JSON.parse(s.exportJson()).bands.wide.order[0]).toBe('log');
     s.resetBand();
     expect(s.isCustom()).toBeFalse();
     expect(localStorage.getItem(KEY)).toBe('{}');
+  });
+
+  it('hides cards on every screen size and shares them in the export', () => {
+    localStorage.removeItem('gameplan.hidden.v1');
+    TestBed.configureTestingModule({ providers: [provideZonelessChangeDetection()] });
+    const s = TestBed.inject(BoardLayout);
+    s.toggleHidden('trophies');
+    expect(s.isHidden('trophies')).toBeTrue();
+    expect(s.anyCustom()).toBeTrue();
+    expect(JSON.parse(localStorage.getItem('gameplan.hidden.v1')!)).toEqual(['trophies']);
+    expect(JSON.parse(s.exportJson()).hidden).toEqual(['trophies']);
+    s.toggleHidden('trophies');
+    expect(s.isHidden('trophies')).toBeFalse();
   });
 });
 
@@ -64,6 +87,7 @@ describe('board layout', () => {
       <app-tile tileKey="habits" label="Habits"
         ><div style="height: 200px"><h2 style="margin: 0">Habits</h2></div></app-tile
       >
+      <app-tile tileKey="replan"></app-tile>
     </app-board>
   `,
 })
@@ -95,6 +119,18 @@ describe('board tiles', () => {
     expect(tile('today').style.gridColumn).toBe('span 7');
   });
 
+  it('an empty card takes no room, even after it was sized', async () => {
+    const { f, tile, layout } = await setup();
+    layout.resize('replan', { w: 12, h: 160 }, false);
+    await f.whenStable();
+    expect(tile('replan').classList).toContain('vacant');
+    expect(tile('replan').style.gridRow).toBe('span 1');
+    layout.toggleHidden('habits');
+    await f.whenStable();
+    expect(getComputedStyle(tile('habits')).display).toBe('none');
+    layout.toggleHidden('habits');
+  });
+
   it('moves a card by dragging its title onto another card', async () => {
     const { f, tile, layout } = await setup();
     const h = tile('habits').querySelector('h2')!.getBoundingClientRect();
@@ -103,8 +139,8 @@ describe('board tiles', () => {
     ptr('pointermove', t.x + 20, t.y + 20);
     ptr('pointerup', t.x + 20, t.y + 20);
     await f.whenStable();
-    expect(layout.current().order.slice(0, 3)).toEqual(['habits', 'now', 'today']);
-    expect(JSON.parse(localStorage.getItem(KEY)!).standard.order[0]).toBe('habits');
+    expect(layout.current().order.slice(1, 4)).toEqual(['habits', 'now', 'today']);
+    expect(JSON.parse(localStorage.getItem(KEY)!).standard.order[1]).toBe('habits');
   });
 
   it('resizes from the lower-right corner, snapping width to columns', async () => {

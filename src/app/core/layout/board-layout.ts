@@ -35,6 +35,7 @@ export const MIN_HEIGHT = 80;
 
 /** The page's order on a phone, and the order new cards join a saved layout in. */
 export const TILE_ORDER = [
+  'replan',
   'now',
   'today',
   'habits',
@@ -49,6 +50,23 @@ export const TILE_ORDER = [
   'log',
 ];
 
+/** what each card is called in the move label and the widgets menu */
+export const TILE_LABELS: Record<string, string> = {
+  replan: 'Rebuild my week',
+  now: 'Now',
+  today: "Today's plan",
+  habits: 'Daily small wins',
+  week: 'This week',
+  evening: 'Evening',
+  shopping: 'Shopping',
+  goals: 'Goals',
+  notes: 'Notes',
+  trophies: 'Trophies',
+  coming: 'Coming up',
+  wins: 'Recent wins',
+  log: 'Your changes',
+};
+
 function band(order: string[], w: Record<string, number>): BandLayout {
   return { order, size: Object.fromEntries(order.map((k) => [k, { w: w[k], h: null }])) };
 }
@@ -56,6 +74,7 @@ function band(order: string[], w: Record<string, number>): BandLayout {
 export const DEFAULT_LAYOUTS: Record<GridBand, BandLayout> = {
   // the classic two-column page
   standard: band(TILE_ORDER, {
+    replan: 12,
     now: 12,
     today: 7,
     habits: 5,
@@ -72,6 +91,7 @@ export const DEFAULT_LAYOUTS: Record<GridBand, BandLayout> = {
   // the week needs about half the width for seven readable days
   wide: band(
     [
+      'replan',
       'now',
       'today',
       'week',
@@ -86,6 +106,7 @@ export const DEFAULT_LAYOUTS: Record<GridBand, BandLayout> = {
       'log',
     ],
     {
+      replan: 24,
       now: 6,
       today: 6,
       week: 12,
@@ -102,6 +123,7 @@ export const DEFAULT_LAYOUTS: Record<GridBand, BandLayout> = {
   ),
   ultra: band(
     [
+      'replan',
       'now',
       'today',
       'week',
@@ -116,6 +138,7 @@ export const DEFAULT_LAYOUTS: Record<GridBand, BandLayout> = {
       'log',
     ],
     {
+      replan: 24,
       now: 5,
       today: 5,
       week: 9,
@@ -133,6 +156,8 @@ export const DEFAULT_LAYOUTS: Record<GridBand, BandLayout> = {
 };
 
 const KEY = 'gameplan.layout.v1';
+/** hidden cards apply on every screen size, phones included */
+const HIDDEN_KEY = 'gameplan.hidden.v1';
 
 export function bandFor(width: number): Band {
   if (width >= BANDS.ultra.minWidth) return 'ultra';
@@ -147,7 +172,10 @@ export function normalize(saved: BandLayout | undefined, b: GridBand): BandLayou
   const cols = BANDS[b].cols;
   const known = new Set(TILE_ORDER);
   const order = (saved?.order ?? []).filter((k, i, a) => known.has(k) && a.indexOf(k) === i);
-  for (const k of def.order) if (!order.includes(k)) order.push(k);
+  // a card added since the layout was saved goes right after the card it follows by default
+  def.order.forEach((k, i) => {
+    if (!order.includes(k)) order.splice(i ? order.indexOf(def.order[i - 1]) + 1 : 0, 0, k);
+  });
   const size: Record<string, TileSize> = {};
   for (const k of order) {
     const s = saved?.size?.[k] ?? def.size[k];
@@ -158,13 +186,21 @@ export function normalize(saved: BandLayout | undefined, b: GridBand): BandLayou
   return { order, size };
 }
 
-function load(): SavedLayouts {
+function load<T extends object>(key: string, empty: T): T {
   try {
-    const raw = localStorage.getItem(KEY);
-    const v = raw ? JSON.parse(raw) : {};
-    return v && typeof v === 'object' ? v : {};
+    const raw = localStorage.getItem(key);
+    const v = raw ? JSON.parse(raw) : empty;
+    return v && typeof v === 'object' && Array.isArray(v) === Array.isArray(empty) ? v : empty;
   } catch {
-    return {};
+    return empty;
+  }
+}
+
+function save(key: string, v: unknown) {
+  try {
+    localStorage.setItem(key, JSON.stringify(v));
+  } catch {
+    // private window or storage blocked: the layout still works until reload
   }
 }
 
@@ -179,7 +215,9 @@ export class BoardLayout {
   readonly moving = signal<{ key: string; label: string; x: number; y: number } | null>(null);
   readonly resizing = signal<string | null>(null);
 
-  private readonly saved = signal<SavedLayouts>(load());
+  private readonly saved = signal<SavedLayouts>(load(KEY, {}));
+  /** cards switched off in the widgets menu */
+  readonly hidden = signal<string[]>(load<string[]>(HIDDEN_KEY, []));
 
   /** the arrangement in use for the current band */
   readonly current = computed<BandLayout>(() => {
@@ -191,13 +229,23 @@ export class BoardLayout {
     const b = this.band();
     return b !== 'stack' && !!this.saved()[b];
   });
-  readonly anyCustom = computed(() => Object.keys(this.saved()).length > 0);
+  readonly anyCustom = computed(
+    () => Object.keys(this.saved()).length > 0 || this.hidden().length > 0,
+  );
 
   orderOf(key: string) {
     return this.current().order.indexOf(key);
   }
   sizeOf(key: string): TileSize {
     return this.current().size[key] ?? { w: this.cols(), h: null };
+  }
+
+  isHidden(key: string) {
+    return this.hidden().includes(key);
+  }
+  toggleHidden(key: string) {
+    this.hidden.update((h) => (h.includes(key) ? h.filter((k) => k !== key) : [...h, key]));
+    save(HIDDEN_KEY, this.hidden());
   }
 
   /** move `key` to where `target` is (after it when moving forward, before it when moving back) */
@@ -234,11 +282,7 @@ export class BoardLayout {
 
   /** writes the in-memory arrangement to the browser (after a drag ends) */
   persist() {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(this.saved()));
-    } catch {
-      // private window or storage blocked: the layout still works until reload
-    }
+    save(KEY, this.saved());
   }
 
   /** every customized band, ready to paste into DEFAULT_LAYOUTS */
@@ -247,7 +291,7 @@ export class BoardLayout {
     for (const b of Object.keys(BANDS) as GridBand[]) {
       if (this.saved()[b]) out[b] = normalize(this.saved()[b], b);
     }
-    return JSON.stringify({ layoutVersion: 1, bands: out }, null, 1);
+    return JSON.stringify({ layoutVersion: 1, bands: out, hidden: this.hidden() }, null, 1);
   }
 
   private update(l: BandLayout, persist: boolean) {

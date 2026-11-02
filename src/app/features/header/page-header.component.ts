@@ -3,11 +3,12 @@ import { MatButton } from '@angular/material/button';
 import { PlanStore } from '../../core/plan-store';
 import { DOW, MON, fmtDur, isoWeek, parseD, taskTotal } from '../../shared/format';
 import { ProgressRingComponent } from '../../shared/progress-ring/progress-ring.component';
+import { WidgetsMenuComponent } from '../board/widgets-menu.component';
 
 /** Date line, headline, today's free time, and the score ring with the week recap button. */
 @Component({
   selector: 'app-page-header',
-  imports: [MatButton, ProgressRingComponent],
+  imports: [MatButton, ProgressRingComponent, WidgetsMenuComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div>
@@ -22,6 +23,7 @@ import { ProgressRingComponent } from '../../shared/progress-ring/progress-ring.
         >
       </p>
     </div>
+    <app-widgets-menu />
     <div class="score" aria-live="polite">
       <app-progress-ring [value]="score().pct" />
       <div>
