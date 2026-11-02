@@ -10,7 +10,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { BoardLayout, GAP, MIN_HEIGHT, ROW } from '../../core/layout/board-layout';
+import { BoardLayout, GAP, MIN_HEIGHT, ROW, TILE_LABELS } from '../../core/layout/board-layout';
 
 const INTERACTIVE =
   'button, a, input, textarea, select, label, [role=button], [role=checkbox], .mat-mdc-chip';
@@ -25,15 +25,15 @@ const SLOP = 5;
   selector: 'app-tile',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="body" #body [style.height.px]="height()">
-      <ng-content />
+    <div class="body" [style.height.px]="height()">
+      <div class="content" #content><ng-content /></div>
     </div>
     @if (editable()) {
       <button
         class="grab"
         type="button"
-        [attr.aria-label]="'Move ' + label() + ' (arrow keys)'"
-        [title]="'Drag to move ' + label()"
+        [attr.aria-label]="'Move ' + name() + ' (arrow keys)'"
+        [title]="'Drag to move ' + name()"
         (pointerdown)="press($event, true)"
         (keydown)="key($event)"
       ></button>
@@ -54,6 +54,7 @@ const SLOP = 5;
     '[style.grid-row]': '"span " + rows()',
     '[class.sized]': 'height() != null',
     '[class.vacant]': 'vacant()',
+    '[class.hidden]': 'layout.isHidden(tileKey())',
     '[class.moving]': 'layout.moving()?.key === tileKey()',
     '[class.resizing]': 'layout.resizing() === tileKey()',
     '(pointerdown)': 'titleDown($event)',
@@ -61,11 +62,13 @@ const SLOP = 5;
 })
 export class TileComponent {
   readonly tileKey = input.required<string>();
-  readonly label = input.required<string>();
+  /** defaults to the card's name in TILE_LABELS */
+  readonly label = input<string>();
+  readonly name = computed(() => this.label() ?? TILE_LABELS[this.tileKey()] ?? this.tileKey());
 
   readonly layout = inject(BoardLayout);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
-  private readonly bodyRef = viewChild.required<ElementRef<HTMLElement>>('body');
+  private readonly contentRef = viewChild.required<ElementRef<HTMLElement>>('content');
   private readonly measured = signal(0);
 
   readonly editable = computed(() => this.layout.band() !== 'stack');
@@ -73,7 +76,8 @@ export class TileComponent {
     Math.min(this.layout.cols(), this.layout.sizeOf(this.tileKey()).w),
   );
   readonly height = computed(() => (this.editable() ? this.layout.sizeOf(this.tileKey()).h : null));
-  readonly vacant = computed(() => this.height() == null && this.measured() === 0);
+  /** nothing to show right now (a banner with nothing to say): takes no room, even when sized */
+  readonly vacant = computed(() => this.measured() === 0);
   /** grid rows of ROW px; the tile's bottom padding is the gap to the next card */
   readonly rows = computed(() =>
     this.vacant() ? 1 : Math.ceil(((this.height() ?? this.measured()) + GAP) / ROW),
@@ -83,7 +87,7 @@ export class TileComponent {
 
   constructor() {
     const ro = new ResizeObserver(([e]) => this.measured.set(Math.ceil(e.contentRect.height)));
-    afterNextRender(() => ro.observe(this.bodyRef().nativeElement));
+    afterNextRender(() => ro.observe(this.contentRef().nativeElement));
     inject(DestroyRef).onDestroy(() => {
       ro.disconnect();
       this.stop?.();
@@ -93,7 +97,8 @@ export class TileComponent {
   /** a mouse press on the card's title starts a move; buttons and fields inside keep working */
   titleDown(e: PointerEvent) {
     const t = e.target as HTMLElement;
-    if (e.pointerType === 'touch' || !t.closest('h2, h3, .panel-head, .eyebrow')) return;
+    if (e.pointerType === 'touch' || !t.closest('h2, h3, .panel-head, .eyebrow, .tile-title'))
+      return;
     if (t.closest(INTERACTIVE)) return;
     this.press(e, false);
   }
@@ -114,7 +119,7 @@ export class TileComponent {
         }
         this.layout.moving.set({
           key: this.tileKey(),
-          label: this.label(),
+          label: this.name(),
           x: m.clientX,
           y: m.clientY,
         });
