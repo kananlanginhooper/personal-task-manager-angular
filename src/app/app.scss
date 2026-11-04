@@ -43,3 +43,14 @@
     padding: 14px 16px 80px;
   }
 }
+.credit {
+  text-align: center;
+  font-size: 0.75rem;
+  a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+}

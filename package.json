@@ -1,5 +1,6 @@
 {
   "name": "personal-task-manager",
+  "author": "Kanan Hooper (https://github.com/kananlanginhooper)",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
