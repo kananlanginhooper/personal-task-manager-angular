@@ -1,21 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CdkDragHandle } from '@angular/cdk/drag-drop';
 import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
+import { TapTooltip } from '../../../for-apps/tap-tooltip';
 import { Task } from '../../core/models';
+import { draggingOfHost } from '../../shared/dragging';
 import { estChanged, fmt12, taskSub } from '../../shared/format';
 
 /** One task in a week column. */
 @Component({
   selector: 'app-week-chip',
-  imports: [CdkDragHandle, MatIcon, MatTooltip],
+  imports: [CdkDragHandle, MatIcon, TapTooltip],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let t = task();
     @if (t.locked) {
-      <span class="grip lock" matTooltip="Fixed event">•</span>
+      <span class="grip lock" appTapTooltip="Fixed event">•</span>
     } @else {
-      <span class="grip" cdkDragHandle matTooltip="Drag to move" aria-label="Drag to move"
+      <span
+        class="grip"
+        cdkDragHandle
+        appTapTooltip="Drag to move"
+        [appTapTooltipDisabled]="dragging()"
+        aria-label="Drag to move"
         ><mat-icon>drag_indicator</mat-icon></span
       >
     }
@@ -55,6 +61,7 @@ export class WeekChipComponent {
   readonly problem = input<string | undefined>();
   readonly opened = output<void>();
   readonly fmt12 = fmt12;
+  readonly dragging = draggingOfHost();
   readonly changed = computed(() => estChanged(this.task()));
   readonly sub = computed(() => taskSub(this.task()));
 }

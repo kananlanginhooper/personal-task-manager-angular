@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { MatTooltip } from '@angular/material/tooltip';
+import { TapTooltip } from '../../../for-apps/tap-tooltip';
 import { PlanStore } from '../../core/plan-store';
 import { progress } from '../../core/trophy-rules';
 import { CardComponent } from '../../shared/card/card.component';
@@ -10,7 +10,7 @@ import { TrophyCupComponent } from '../../shared/trophy-cup/trophy-cup.component
 /** Every trophy on a wooden shelf: earned ones first, then the closest to earning. */
 @Component({
   selector: 'app-trophy-shelf',
-  imports: [MatProgressBar, MatTooltip, CardComponent, TrophyCupComponent],
+  imports: [MatProgressBar, TapTooltip, CardComponent, TrophyCupComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './trophy-shelf.component.html',
   styleUrl: './trophy-shelf.component.scss',

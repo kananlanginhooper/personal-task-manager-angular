@@ -1,8 +1,13 @@
 @let t = task();
 @if (t.locked) {
-  <span class="grip lock" matTooltip="Fixed event">•</span>
+  <span class="grip lock" appTapTooltip="Fixed event">•</span>
 } @else {
-  <span class="grip" cdkDragHandle matTooltip="Drag to move" aria-label="Drag to move"
+  <span
+    class="grip"
+    cdkDragHandle
+    appTapTooltip="Drag to move"
+    [appTapTooltipDisabled]="dragging()"
+    aria-label="Drag to move"
     ><mat-icon>drag_indicator</mat-icon></span
   >
 }
@@ -51,7 +56,7 @@
 <span
   class="dur"
   [class.changed]="changed()"
-  [matTooltip]="changed() ? 'Your estimate. Originally ' + t.origEst + ' m' : ''"
+  [appTapTooltip]="changed() ? 'Your estimate. Originally ' + t.origEst + ' m' : ''"
 >
   {{ changed() ? t.origEst + '→' : '' }}{{ fmtDur(total()) }}
 </span>

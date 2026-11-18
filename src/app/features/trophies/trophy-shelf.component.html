@@ -9,7 +9,7 @@
         class="trophy"
         [class.locked]="!t.earned"
         [class.fresh]="store.freshTrophy() === t.id"
-        [matTooltip]="t.desc"
+        [appTapTooltip]="t.desc"
       >
         <app-trophy-cup [earned]="t.earned" [id]="t.id" />
         <b>{{ t.name }}</b>
