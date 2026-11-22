@@ -39,8 +39,15 @@ export interface Hero {
   msg: string;
   combo: number;
 }
+/** One shooting star: % from the top of the screen, and when (ms) and how long it streaks. */
+export interface Star {
+  id: number;
+  top: number;
+  delay: number;
+  dur: number;
+}
 
-/** Confetti, fireworks, a chime and the big full-screen card. */
+/** Confetti, fireworks (or shooting stars on a low-power screen), a chime and the big full-screen card. */
 @Injectable({ providedIn: 'root' })
 export class CelebrateService implements OnDestroy {
   readonly toast = signal<Toast | null>(null);
@@ -48,6 +55,9 @@ export class CelebrateService implements OnDestroy {
   readonly soundOn = signal(this.readSound());
   /** brief shake of the page, bound as a class on the root component's host */
   readonly pulse = signal(false);
+  /** the low-power tier's shooting stars, drawn by the celebration layer */
+  readonly stars = signal<Star[]>([]);
+  private starId = 0;
   private combo = 0;
   private comboTimer?: ReturnType<typeof setTimeout>;
   private toastTimer?: ReturnType<typeof setTimeout>;
@@ -90,7 +100,7 @@ export class CelebrateService implements OnDestroy {
   }
 
   /** Small wins get confetti + a toast; big ones (or every 5th in a row) get fireworks and the full-screen card.
-   *  The low-power tier (LITE) keeps every piece but fires a fraction of the particles. */
+   *  The low-power tier (LITE) swaps the canvas confetti for a few big shooting stars and keeps the toast and card. */
   celebrate(msg: string, at: { x: number; y: number }, big = false, head?: string) {
     this.combo++;
     clearTimeout(this.comboTimer);
@@ -114,9 +124,13 @@ export class CelebrateService implements OnDestroy {
       });
       clearTimeout(this.heroTimer);
       this.heroTimer = setTimeout(() => this.hero.set(null), 4200);
-      this.burst(at, LITE ? 40 : 160);
-      this.cannons();
-      this.fireworks(LITE ? 1600 : 2600);
+      if (LITE) {
+        this.shootingStars(6);
+      } else {
+        this.burst(at, 160);
+        this.cannons();
+        this.fireworks(2600);
+      }
     } else {
       this.showToast({
         title:
@@ -125,15 +139,34 @@ export class CelebrateService implements OnDestroy {
         msg,
         icon: '★',
       });
-      this.burst(at, LITE ? 35 : 110);
-      if (!LITE) this.later(() => this.cannons(), 120);
+      if (LITE) {
+        this.shootingStars(3);
+      } else {
+        this.burst(at, 110);
+        this.later(() => this.cannons(), 120);
+      }
     }
   }
 
-  fire(o: confetti.Options) {
+  /** A few big stars streaking across the screen: each is one layer moved by transform and opacity, which a weak
+   *  GPU handles easily, where a full-screen canvas of particles isn't. */
+  shootingStars(n: number) {
     if (this.reduced) return;
-    const lite: confetti.Options = LITE ? { ticks: 120 } : {};
-    confetti({ colors: COLORS, disableForReducedMotion: true, zIndex: 70, ...lite, ...o });
+    const batch: Star[] = Array.from({ length: n }, (_, i) => ({
+      id: ++this.starId,
+      top: 6 + Math.random() * 50,
+      delay: i * 260 + Math.round(Math.random() * 120),
+      dur: 900 + Math.round(Math.random() * 400),
+    }));
+    this.stars.update((s) => [...s, ...batch]);
+    const done = new Set(batch.map((b) => b.id));
+    const end = Math.max(...batch.map((b) => b.delay + b.dur));
+    this.later(() => this.stars.update((s) => s.filter((x) => !done.has(x.id))), end + 100);
+  }
+
+  fire(o: confetti.Options) {
+    if (!this.reduced)
+      confetti({ colors: COLORS, disableForReducedMotion: true, zIndex: 70, ...o });
   }
   burst(at: { x: number; y: number }, n: number) {
     this.fire({
@@ -146,14 +179,14 @@ export class CelebrateService implements OnDestroy {
   }
   cannons() {
     this.fire({
-      particleCount: LITE ? 25 : 90,
+      particleCount: 90,
       angle: 60,
       spread: 60,
       startVelocity: 70,
       origin: { x: 0, y: 1 },
     });
     this.fire({
-      particleCount: LITE ? 25 : 90,
+      particleCount: 90,
       angle: 120,
       spread: 60,
       startVelocity: 70,
@@ -165,7 +198,7 @@ export class CelebrateService implements OnDestroy {
     const shot = () => {
       if (Date.now() > end) return;
       this.fire({
-        particleCount: LITE ? 30 : 70,
+        particleCount: 70,
         spread: 360,
         startVelocity: 32,
         ticks: 90,
@@ -174,13 +207,13 @@ export class CelebrateService implements OnDestroy {
         shapes: ['circle', 'square', 'star'],
         origin: { x: 0.15 + Math.random() * 0.7, y: 0.15 + Math.random() * 0.35 },
       });
-      this.later(shot, LITE ? 520 : 260);
+      this.later(shot, 260);
     };
     shot();
     this.later(
       () =>
         this.fire({
-          particleCount: LITE ? 40 : 220,
+          particleCount: 220,
           spread: 160,
           startVelocity: 55,
           scalar: 1.4,

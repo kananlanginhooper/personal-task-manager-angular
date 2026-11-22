@@ -16,6 +16,15 @@
     </div>
   </div>
 }
+@for (s of fx.stars(); track s.id) {
+  <div
+    class="shoot"
+    aria-hidden="true"
+    [style.top.%]="s.top"
+    [style.animation-delay.ms]="s.delay"
+    [style.animation-duration.ms]="s.dur"
+  ></div>
+}
 <button
   type="button"
   class="soundbtn"

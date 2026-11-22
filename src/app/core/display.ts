@@ -5,9 +5,9 @@
 export const DISPLAY = new URLSearchParams(location.search).has('display');
 
 /**
- * Low-power celebrations (the Pi 3 at 1080p): fewer confetti particles and bursts, no page shake, no blurred shadows
- * on anything that animates. On by itself when the browser reports 1 GB of memory or less; `?lite` forces it on and
- * `?lite=0` off.
+ * Low-power celebrations (the Pi 3 at 1080p): a few big shooting stars instead of canvas confetti, no page shake,
+ * no blurred shadows on anything that animates. The toast and the full-screen card stay. On by itself when the
+ * browser reports 1 GB of memory or less; `?lite` forces it on and `?lite=0` off.
  */
 export const LITE = (() => {
   const q = new URLSearchParams(location.search).get('lite');
