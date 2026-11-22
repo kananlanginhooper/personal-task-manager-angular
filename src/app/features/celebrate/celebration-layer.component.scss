@@ -161,33 +161,36 @@
   }
 }
 
-// shooting stars (the low-power tier's stand-in for confetti): a gold tail with a star at its head, one layer each,
-// streaking across and slightly down; only transform and opacity change
+// shooting stars (the low-power tier's stand-in for confetti): a long gold tail with a big star at its head, one
+// layer each, streaking across and slightly down; only transform and opacity change. The star is an SVG, not a text
+// glyph: a glyph this size is slow to rasterize the first time on the Pi.
 .shoot {
   position: fixed;
   left: 0;
-  z-index: 1250;
-  width: 300px;
-  height: 6px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, transparent, var(--gold));
+  z-index: 1150; // over the page and the toast, under the big-win card
+  width: 1400px;
+  height: 36px;
+  margin-top: -18px;
+  border-radius: 18px;
+  background: linear-gradient(90deg, transparent, rgb(242 184 58 / 0.9));
   pointer-events: none;
   will-change: transform, opacity;
-  animation: streak 1s linear both;
+  animation: streak 1.4s linear both;
 }
 .shoot::after {
-  content: '★';
+  content: '';
   position: absolute;
-  right: -20px;
+  right: -200px;
   top: 50%;
-  transform: translateY(-50%);
-  font-size: 44px;
-  line-height: 1;
-  color: var(--gold);
+  width: 440px;
+  height: 440px;
+  margin-top: -220px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F2B83A' d='M12 1.5l3.1 6.9 7.4.7-5.6 5 1.7 7.4L12 17.6l-6.6 3.9 1.7-7.4-5.6-5 7.4-.7z'/%3E%3C/svg%3E")
+    center / contain no-repeat;
 }
 @keyframes streak {
   0% {
-    transform: translate3d(-340px, 0, 0) rotate(12deg);
+    transform: translate3d(-1700px, 0, 0) rotate(12deg);
     opacity: 0;
   }
   10%,
@@ -208,11 +211,34 @@
     will-change: transform;
   }
   .hero-card {
+    position: relative; // above the light sweep
     box-shadow: 0 0 0 4px var(--gold);
     will-change: transform, opacity;
   }
   .hero-star {
     will-change: transform;
+  }
+  // big wins: one wide band of gold light sweeps across behind the card
+  .hero {
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 420px;
+    background: linear-gradient(90deg, transparent, rgb(242 184 58 / 0.45), transparent);
+    pointer-events: none;
+    will-change: transform;
+    animation: sweep 1.2s ease-in-out both;
+  }
+}
+@keyframes sweep {
+  from {
+    transform: translateX(-420px);
+  }
+  to {
+    transform: translateX(100vw);
   }
 }
 

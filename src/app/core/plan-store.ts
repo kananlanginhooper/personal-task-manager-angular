@@ -1,7 +1,13 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { DataSource } from './data/data-source';
 import { CelebrateService } from './celebrate.service';
-import { DISPLAY } from './display';
+import { DISPLAY, LITE } from './display';
+
+/** requestIdleCallback where the browser has it (not Safari), with a cap so the work always happens */
+function whenIdle(fn: () => void) {
+  if (typeof requestIdleCallback === 'function') requestIdleCallback(fn, { timeout: 1500 });
+  else setTimeout(fn, 200);
+}
 import {
   Area,
   Award,
@@ -154,8 +160,16 @@ export class PlanStore {
   private async run<T>(fn: () => Promise<T>): Promise<T | undefined> {
     try {
       const r = await fn();
-      this.refreshChanges();
-      setTimeout(() => this.checkTrophies(true), 60);
+      // the change-log re-read and the trophy check wait for an idle moment, so they don't compete with the
+      // celebration; on a low-power screen they also wait out its first two seconds
+      setTimeout(
+        () =>
+          whenIdle(() => {
+            this.refreshChanges();
+            this.checkTrophies(true);
+          }),
+        LITE ? 2000 : 60,
+      );
       return r;
     } catch (e) {
       this.fx.note(`Couldn't save that change (${errorText(e)}). Try again in a moment.`);

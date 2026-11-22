@@ -258,3 +258,9 @@ html.display {
     visibility: hidden;
   }
 }
+
+// ---- low-power screens (core/display.ts LITE, the Pi 3 at 1080p): no blurred shadows anywhere, which were a large
+// share of every repaint there; cards keep their own surface color, so they still stand apart
+html.lite {
+  --shadow: none;
+}

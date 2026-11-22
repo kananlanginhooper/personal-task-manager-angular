@@ -9,7 +9,7 @@ import {
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CelebrateService } from './core/celebrate.service';
-import { DISPLAY, REFRESH_MS } from './core/display';
+import { DISPLAY, LITE, REFRESH_MS } from './core/display';
 import { todayIso } from './shared/format';
 import { PlanStore } from './core/plan-store';
 import { ChangeLogComponent } from './features/activity/change-log.component';
@@ -84,6 +84,7 @@ export class App {
       clearInterval(timer);
       document.removeEventListener('visibilitychange', onShow);
     });
+    document.documentElement.classList.toggle('lite', LITE);
     if (DISPLAY) {
       document.documentElement.classList.add('display');
       return; // nothing opens the editor or the recap on a wall screen

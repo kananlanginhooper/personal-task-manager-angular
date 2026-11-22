@@ -155,10 +155,13 @@ export class CelebrateService implements OnDestroy {
     const batch: Star[] = Array.from({ length: n }, (_, i) => ({
       id: ++this.starId,
       top: 6 + Math.random() * 50,
-      delay: i * 260 + Math.round(Math.random() * 120),
-      dur: 900 + Math.round(Math.random() * 400),
+      // 520 ms apart and at most 1.5 s each, so no more than 3 big stars are ever on screen at once (the Pi 3's
+      // budget at 1080p)
+      delay: i * 520 + Math.round(Math.random() * 60),
+      dur: 1300 + Math.round(Math.random() * 200),
     }));
-    this.stars.update((s) => [...s, ...batch]);
+    // a new win replaces stars still flying from the last one, so quick check-offs don't pile them up
+    this.stars.set(batch);
     const done = new Set(batch.map((b) => b.id));
     const end = Math.max(...batch.map((b) => b.delay + b.dur));
     this.later(() => this.stars.update((s) => s.filter((x) => !done.has(x.id))), end + 100);

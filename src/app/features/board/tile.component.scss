@@ -7,6 +7,12 @@
 }
 .body {
   min-width: 0;
+  // a change inside one card (a check-off, a new line) relays out that card, not the whole board
+  contain: layout style;
+}
+// low-power screens: the card is also its own paint boundary (its shadow is gone there, so nothing is clipped)
+:host-context(html.lite) .body {
+  contain: layout paint style;
 }
 .content {
   display: flow-root; // child margins stay inside, so the measured height is the real one
