@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { CelebrateService } from '../../core/celebrate.service';
+import { LITE } from '../../core/display';
 
 /** The full-screen hero card, the toast and the sound toggle. Confetti and fireworks draw on their own canvas. */
 @Component({
@@ -9,8 +10,9 @@ import { CelebrateService } from '../../core/celebrate.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './celebration-layer.component.html',
   styleUrl: './celebration-layer.component.scss',
-  host: { '(document:keydown.escape)': 'fx.dismissHero()' },
+  host: { '(document:keydown.escape)': 'fx.dismissHero()', '[class.lite]': 'lite' },
 })
 export class CelebrationLayerComponent {
   readonly fx = inject(CelebrateService);
+  readonly lite = LITE;
 }

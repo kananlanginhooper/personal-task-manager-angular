@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 import confetti from 'canvas-confetti';
+import { LITE } from './display';
 
 const COLORS = [
   '#E0A019',
@@ -88,19 +89,23 @@ export class CelebrateService implements OnDestroy {
     this.hero.set(null);
   }
 
-  /** Small wins get confetti + a toast; big ones (or every 5th in a row) get fireworks and the full-screen card. */
+  /** Small wins get confetti + a toast; big ones (or every 5th in a row) get fireworks and the full-screen card.
+   *  The low-power tier (LITE) keeps every piece but fires a fraction of the particles. */
   celebrate(msg: string, at: { x: number; y: number }, big = false, head?: string) {
     this.combo++;
     clearTimeout(this.comboTimer);
     this.comboTimer = setTimeout(() => (this.combo = 0), 10 * 60 * 1000);
     const epic = big || this.combo % 5 === 0;
     this.chime(epic);
-    this.pulse.set(false);
-    clearTimeout(this.pulseTimer);
-    this.later(() => {
-      this.pulse.set(true);
-      this.pulseTimer = setTimeout(() => this.pulse.set(false), 400);
-    }, 0);
+    // the shake moves the whole page, a full-screen repaint the Pi can't keep up with
+    if (!LITE) {
+      this.pulse.set(false);
+      clearTimeout(this.pulseTimer);
+      this.later(() => {
+        this.pulse.set(true);
+        this.pulseTimer = setTimeout(() => this.pulse.set(false), 400);
+      }, 0);
+    }
     if (epic) {
       this.hero.set({
         head: head || HYPE[Math.floor(Math.random() * HYPE.length)],
@@ -109,9 +114,9 @@ export class CelebrateService implements OnDestroy {
       });
       clearTimeout(this.heroTimer);
       this.heroTimer = setTimeout(() => this.hero.set(null), 4200);
-      this.burst(at, 160);
+      this.burst(at, LITE ? 40 : 160);
       this.cannons();
-      this.fireworks(2600);
+      this.fireworks(LITE ? 1600 : 2600);
     } else {
       this.showToast({
         title:
@@ -120,14 +125,15 @@ export class CelebrateService implements OnDestroy {
         msg,
         icon: '★',
       });
-      this.burst(at, 110);
-      this.later(() => this.cannons(), 120);
+      this.burst(at, LITE ? 35 : 110);
+      if (!LITE) this.later(() => this.cannons(), 120);
     }
   }
 
   fire(o: confetti.Options) {
-    if (!this.reduced)
-      confetti({ colors: COLORS, disableForReducedMotion: true, zIndex: 70, ...o });
+    if (this.reduced) return;
+    const lite: confetti.Options = LITE ? { ticks: 120 } : {};
+    confetti({ colors: COLORS, disableForReducedMotion: true, zIndex: 70, ...lite, ...o });
   }
   burst(at: { x: number; y: number }, n: number) {
     this.fire({
@@ -140,14 +146,14 @@ export class CelebrateService implements OnDestroy {
   }
   cannons() {
     this.fire({
-      particleCount: 90,
+      particleCount: LITE ? 25 : 90,
       angle: 60,
       spread: 60,
       startVelocity: 70,
       origin: { x: 0, y: 1 },
     });
     this.fire({
-      particleCount: 90,
+      particleCount: LITE ? 25 : 90,
       angle: 120,
       spread: 60,
       startVelocity: 70,
@@ -159,7 +165,7 @@ export class CelebrateService implements OnDestroy {
     const shot = () => {
       if (Date.now() > end) return;
       this.fire({
-        particleCount: 70,
+        particleCount: LITE ? 30 : 70,
         spread: 360,
         startVelocity: 32,
         ticks: 90,
@@ -168,13 +174,13 @@ export class CelebrateService implements OnDestroy {
         shapes: ['circle', 'square', 'star'],
         origin: { x: 0.15 + Math.random() * 0.7, y: 0.15 + Math.random() * 0.35 },
       });
-      this.later(shot, 260);
+      this.later(shot, LITE ? 520 : 260);
     };
     shot();
     this.later(
       () =>
         this.fire({
-          particleCount: 220,
+          particleCount: LITE ? 40 : 220,
           spread: 160,
           startVelocity: 55,
           scalar: 1.4,

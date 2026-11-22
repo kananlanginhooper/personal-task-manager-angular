@@ -161,6 +161,22 @@
   }
 }
 
+// low-power tier (core/display.ts LITE): animate only transform and opacity, with no blurred shadow on anything that
+// moves, and give the moving parts their own layer up front
+:host(.lite) {
+  .toast {
+    box-shadow: none;
+    will-change: transform;
+  }
+  .hero-card {
+    box-shadow: 0 0 0 4px var(--gold);
+    will-change: transform, opacity;
+  }
+  .hero-star {
+    will-change: transform;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .toast {
     transition: none;
