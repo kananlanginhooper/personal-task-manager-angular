@@ -4,11 +4,12 @@ import { PlanStore } from '../../core/plan-store';
 import { DOW, MON, fmtDur, isoWeek, parseD, taskTotal } from '../../shared/format';
 import { ProgressRingComponent } from '../../shared/progress-ring/progress-ring.component';
 import { WidgetsMenuComponent } from '../board/widgets-menu.component';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 /** Date line, headline, today's free time, and the score ring with the week recap button. */
 @Component({
   selector: 'app-page-header',
-  imports: [MatButton, ProgressRingComponent, WidgetsMenuComponent],
+  imports: [MatButton, ProgressRingComponent, ThemeToggleComponent, WidgetsMenuComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div>
@@ -23,7 +24,10 @@ import { WidgetsMenuComponent } from '../board/widgets-menu.component';
         >
       </p>
     </div>
-    <app-widgets-menu />
+    <div class="tools">
+      <app-theme-toggle />
+      <app-widgets-menu />
+    </div>
     <div class="score" aria-live="polite">
       <app-progress-ring [value]="score().pct" />
       <div>

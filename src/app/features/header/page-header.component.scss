@@ -21,6 +21,11 @@ p {
   margin: 4px 0 0;
   color: var(--muted);
 }
+.tools {
+  display: flex;
+  gap: 8px;
+  align-self: center;
+}
 .score {
   display: flex;
   align-items: center;
