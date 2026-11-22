@@ -9,7 +9,7 @@ import {
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CelebrateService } from './core/celebrate.service';
-import { DISPLAY, DISPLAY_REFRESH_MS } from './core/display';
+import { DISPLAY, REFRESH_MS } from './core/display';
 import { todayIso } from './shared/format';
 import { PlanStore } from './core/plan-store';
 import { ChangeLogComponent } from './features/activity/change-log.component';
@@ -76,13 +76,16 @@ export class App {
 
   constructor() {
     this.store.load();
+    // a page left open (the Pi on the wall, a tab in the background) re-reads the plan, and reloads for a new day
+    const timer = setInterval(() => this.refresh(), REFRESH_MS);
+    const onShow = () => this.refresh();
+    document.addEventListener('visibilitychange', onShow);
+    inject(DestroyRef).onDestroy(() => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', onShow);
+    });
     if (DISPLAY) {
       document.documentElement.classList.add('display');
-      const timer = setInterval(() => {
-        if (todayIso() !== this.store.today) location.reload();
-        else this.store.load();
-      }, DISPLAY_REFRESH_MS);
-      inject(DestroyRef).onDestroy(() => clearInterval(timer));
       return; // nothing opens the editor or the recap on a wall screen
     }
     effect(() => {
@@ -93,6 +96,21 @@ export class App {
       const week = this.store.recap();
       untracked(() => (week ? this.openRecap(week) : this.recapRef?.close()));
     });
+  }
+
+  /** Skipped while hidden or while someone is in the middle of something: a dialog, a drag, a half-typed entry. */
+  private refresh() {
+    if (document.hidden || this.busy()) return;
+    if (todayIso() !== this.store.today) location.reload();
+    else this.store.load();
+  }
+  private busy(): boolean {
+    if (this.store.editor() || this.store.recap() || this.dialog.openDialogs.length) return true;
+    if (document.querySelector('.cdk-drag-dragging, app-board.busy, app-board.sizing')) return true;
+    const el = document.activeElement;
+    return el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement
+      ? el.type !== 'checkbox' && !!el.value
+      : false;
   }
 
   private openEditor(data: EditorData) {
