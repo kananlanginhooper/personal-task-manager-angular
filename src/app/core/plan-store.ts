@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { DataSource } from './data/data-source';
 import { CelebrateService } from './celebrate.service';
+import { DISPLAY } from './display';
 import {
   Area,
   Award,
@@ -89,8 +90,9 @@ export class PlanStore {
       this.changes.set(b.changes);
       this.notes.set(b.notes);
       this.loaded.set(true);
+      this.error.set(null);
       document.title = b.settings?.appTitle || 'Game Plan';
-      this.checkTrophies(false);
+      if (!DISPLAY) this.checkTrophies(false); // awarding writes; the display view only reads
     } catch (e) {
       this.error.set(`Couldn't load your plan (${errorText(e)}). Is the API running?`);
     }

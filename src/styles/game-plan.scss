@@ -229,3 +229,32 @@ app-tile.sized .panel {
   box-shadow: none;
   background: transparent;
 }
+
+// ---- the display view (core/display.ts, `?display`): a read-only wall screen. Nothing reacts to touch, and
+// the controls, the edit-only cards and the how-to text are hidden.
+html.display {
+  app-board,
+  app-page-header {
+    pointer-events: none;
+  }
+  app-demo-bar,
+  app-recap-banner,
+  app-layout-bar,
+  app-celebration-layer,
+  .credit,
+  app-page-header .tools,
+  app-page-header .hint,
+  app-page-header .score button,
+  app-tile[tilekey='replan'],
+  app-tile[tilekey='notes'],
+  app-tile[tilekey='log'],
+  app-board button,
+  app-board form,
+  app-board input:not([type='checkbox']) {
+    display: none !important;
+  }
+  // the grips keep their space: the today rows and week chips are grids built around them
+  app-board .grip {
+    visibility: hidden;
+  }
+}

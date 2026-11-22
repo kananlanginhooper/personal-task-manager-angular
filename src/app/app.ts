@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, effect, inject, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  untracked,
+} from '@angular/core';
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CelebrateService } from './core/celebrate.service';
+import { DISPLAY, DISPLAY_REFRESH_MS } from './core/display';
+import { todayIso } from './shared/format';
 import { PlanStore } from './core/plan-store';
 import { ChangeLogComponent } from './features/activity/change-log.component';
 import { ComingUpComponent } from './features/activity/coming-up.component';
@@ -67,6 +76,15 @@ export class App {
 
   constructor() {
     this.store.load();
+    if (DISPLAY) {
+      document.documentElement.classList.add('display');
+      const timer = setInterval(() => {
+        if (todayIso() !== this.store.today) location.reload();
+        else this.store.load();
+      }, DISPLAY_REFRESH_MS);
+      inject(DestroyRef).onDestroy(() => clearInterval(timer));
+      return; // nothing opens the editor or the recap on a wall screen
+    }
     effect(() => {
       const ed = this.store.editor();
       untracked(() => (ed ? this.openEditor(ed) : this.editorRef?.close()));

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DataSource } from './data-source';
+import { DISPLAY, DISPLAY_TOKEN } from '../display';
 import { configApiBase } from '../runtime-config';
 import { Award, Bootstrap, Change, Note, Project, ShoppingItem, Task } from '../models';
 
@@ -18,10 +19,11 @@ export class ApiDataSource extends DataSource {
   private base = apiBase();
 
   private async req<T>(method: string, path: string, body?: unknown): Promise<T> {
+    if (DISPLAY && method !== 'GET') throw new Error('the display view is read-only');
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-    let token: string | null = null;
+    let token: string | null = DISPLAY_TOKEN;
     try {
-      token = localStorage.getItem('ptm-token');
+      token ??= localStorage.getItem('ptm-token');
     } catch {
       /* storage blocked */
     }
