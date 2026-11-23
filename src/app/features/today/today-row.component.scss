@@ -10,6 +10,13 @@
 :host(:hover) {
   background: var(--sunk);
 }
+// low-power screens: no hover changes (see html.lite in styles/game-plan.scss)
+:host-context(html.lite):hover {
+  background: var(--surface);
+}
+:host-context(html.lite).fixed:hover {
+  background: var(--accent-soft);
+}
 :host(.fixed) {
   background: var(--accent-soft);
 }

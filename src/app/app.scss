@@ -54,3 +54,7 @@
     text-decoration: underline;
   }
 }
+// low-power screens: no hover changes (see html.lite in styles/game-plan.scss)
+:host-context(html.lite) .credit a:hover {
+  text-decoration: none;
+}

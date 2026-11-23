@@ -107,10 +107,24 @@
     height: 28px;
   }
 }
-// low-power screens: the handles appear without fading, so moving the mouse across cards doesn't start repaints
+// low-power screens: the handles stay faintly shown instead of appearing under the mouse, so moving the mouse
+// across cards doesn't repaint anything (see html.lite in styles/game-plan.scss)
 :host-context(html.lite) {
   .grab,
   .corner {
     transition: none;
   }
+  .grab {
+    opacity: 0.5;
+  }
+  .corner {
+    opacity: 0.45;
+  }
+}
+:host-context(html.lite).moving .grab,
+:host-context(html.lite) .grab:focus-visible {
+  opacity: 1;
+}
+:host-context(html.lite).resizing .corner {
+  opacity: 0.9;
 }

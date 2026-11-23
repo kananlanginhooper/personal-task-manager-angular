@@ -33,6 +33,10 @@
 .trophy:hover ::ng-deep svg {
   transform: translateY(-3px) rotate(-3deg);
 }
+// low-power screens: no hover changes (see html.lite in styles/game-plan.scss)
+:host-context(html.lite) .trophy:hover ::ng-deep svg {
+  transform: none;
+}
 .trophy b {
   font-family: var(--display);
   font-size: 0.86rem;
