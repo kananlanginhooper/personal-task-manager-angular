@@ -14,6 +14,7 @@
   max-width: min(92vw, 480px);
   transition: transform 0.35s cubic-bezier(0.2, 1.3, 0.4, 1);
   z-index: 1100;
+  pointer-events: none; // nothing to click, and it never leaves the page, so hit tests skip it
 }
 .toast.show {
   transform: translate(-50%, 0);
@@ -208,6 +209,9 @@
 :host(.lite) {
   .toast {
     box-shadow: none;
+  }
+  // its own layer only while it's up, not for the whole time the page is open
+  .toast.show {
     will-change: transform;
   }
   .hero-card {
