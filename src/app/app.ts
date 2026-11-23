@@ -34,6 +34,7 @@ import { ShoppingPanelComponent } from './features/shopping/shopping-panel.compo
 import { TodayPanelComponent } from './features/today/today-panel.component';
 import { TrophyShelfComponent } from './features/trophies/trophy-shelf.component';
 import { WeekPanelComponent } from './features/week/week-panel.component';
+import { restTooltips } from './shared/rest-tooltips';
 
 /** The page: lays out every feature and opens the editor and recap dialogs when the store asks for them. */
 @Component({
@@ -85,6 +86,7 @@ export class App {
       document.removeEventListener('visibilitychange', onShow);
     });
     document.documentElement.classList.toggle('lite', LITE);
+    if (LITE) inject(DestroyRef).onDestroy(restTooltips());
     if (DISPLAY) {
       document.documentElement.classList.add('display');
       return; // nothing opens the editor or the recap on a wall screen
