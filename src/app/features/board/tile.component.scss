@@ -107,3 +107,10 @@
     height: 28px;
   }
 }
+// low-power screens: the handles appear without fading, so moving the mouse across cards doesn't start repaints
+:host-context(html.lite) {
+  .grab,
+  .corner {
+    transition: none;
+  }
+}

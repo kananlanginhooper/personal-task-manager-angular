@@ -22,3 +22,7 @@ circle {
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
 }
+// low-power screens: the ring jumps to its new value; animating the stroke redraws it on the main thread every frame
+:host-context(html.lite) .val {
+  transition: none;
+}
