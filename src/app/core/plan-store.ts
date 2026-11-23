@@ -161,14 +161,15 @@ export class PlanStore {
     try {
       const r = await fn();
       // the change-log re-read and the trophy check wait for an idle moment, so they don't compete with the
-      // celebration; on a low-power screen they also wait out its first two seconds
+      // celebration; on a low-power screen they wait until a small win's three stars have crossed (about 2.6 s), so
+      // the new lines in the log and Recent wins don't relay the page mid-flight
       setTimeout(
         () =>
           whenIdle(() => {
             this.refreshChanges();
             this.checkTrophies(true);
           }),
-        LITE ? 2000 : 60,
+        LITE ? 2800 : 60,
       );
       return r;
     } catch (e) {
